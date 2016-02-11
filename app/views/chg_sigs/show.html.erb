@@ -1,0 +1,11 @@
+<h1>Chg Sig: <%=h @chg_sig.name -%></h1>
+<p>
+Watt change: <%=h @chg_sig.wattchg %><br />
+On Watts Stddev: <%=h @chg_sig.wattchg_sdev %><br />
+Var change: <%=h @chg_sig.varchg %></br />
+Var change stddev: <%=h @chg_sig.varchg_sdev %><br />
+Ramp: <%=h @chg_sig.ramp %><br />
+Ramp Stddev: <%=h @chg_sig.ramp_sdev %><br />
+</p>
+<%= link_to 'Edit', edit_chg_sig_path(@chg_sig) %> |
+<%= link_to 'ListSigs', chg_sigs_path %>

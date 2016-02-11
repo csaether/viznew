@@ -1,0 +1,23 @@
+<p id="box", class="bigbox"></p>
+
+<script>
+  var wattvarchart = {
+    chart: { renderTo: "box",
+             zoomType: "xy",
+             defaultSeriesType: "scatter" },
+    title: { text: "Watts versus VAR" },
+    series: []
+  };
+
+  var seriesdat;
+  seriesdat = {
+    data: <%= @wattvars.to_json %>
+  };
+  wattvarchart.series.push( seriesdat );
+
+  document.observe("dom:loaded", function() {
+    new Highcharts.Chart( wattvarchart );
+  });
+</script>
+
+<%= link_to "Back", :back %>

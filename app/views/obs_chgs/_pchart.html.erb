@@ -1,0 +1,18 @@
+<!-- so the partial is being called from ajax (?) and has access to 
+  variables that were set up in the page originally, plus the
+  ruby variables established by the controller method that renders this
+-->
+<script>
+
+  var seriesdat;
+  <%= "dafftchartopts" -%>.series = []
+  <% @sdata.each do |sdat| -%>
+      seriesdat = {
+      data: <%= sdat.to_json %> };
+
+      dafftchartopts.series.push( seriesdat );
+  <% end -%>
+
+  new Highcharts.Chart( dafftchartopts );
+
+</script>

@@ -1,0 +1,151 @@
+<table>
+  <tr>
+    <th>Watt Diff</th>
+    <th>NewPower</th>
+    <th>Ramp</th>
+    <th>VAR Diff</th>
+    <th>Time</th>
+    <th>Endcyc</th>
+    <th>Begcyc</th>
+    <th>Tran Cycles</th>
+    <th>What?</th>
+  </tr>
+  <tr>
+    <td><%=h @obs_chg.wattdiff %></td>
+    <td><%=h @obs_chg.pwr_datum.watts %></td>
+    <td><%=h onedecimal(@obs_chg.ramp) %></td>
+    <td><%=h @obs_chg.vardiff %></td>
+    <td><%=h @obs_chg.pwr_datum.dtime.getlocal.asctime %></td>
+    <td><%= @obs_chg.precycnum %></td>
+    <td><%= @obs_chg.postcycnum %></td>
+    <td><%= @obs_chg.trancycs %></td>
+    <td><%=h chgname( @obs_chg ) %></td>
+    <td><%= link_to "Back", :back %></td>
+  </tr>
+<table>
+  <tr>
+    <td id="cell1", class="chartbox"></td>
+    <td id="cell2", class="chartbox"></td>
+  </tr>
+  <tr>
+    <td id="cell3", class="chartbox"></td>
+    <td id="cell4", class="chartbox"></td>
+  </tr>
+</table>
+
+<script>
+  var ampchartopts = {
+    chart: { renderTo: "cell1",
+               zoomType: "xy",
+               defaultSeriesType: "line" },
+    title: { text: "Current pre-post cycles values" },
+    series: []
+  };
+
+  var voltchartopts = {
+    chart: { renderTo: "cell2",
+               zoomType: "xy",
+               defaultSeriesType: "line" },
+    title: { text: "Voltage pre-post cycles values" },
+    series: []
+  };
+
+  var afftchartopts = {
+    chart: { renderTo: "cell3",
+               zoomType: "xy",
+               defaultSeriesType: "scatter" },
+    title: { text: "Current pre-post cycles spectra" },
+    series: []
+  };
+
+  var dafftchartopts = {
+    chart: { renderTo: "cell4",
+               zoomType: "xy",
+               defaultSeriesType: "scatter" },
+    title: { text: "Current pre-post cycles spectra diffs" },
+    series: []
+  };
+
+  var seriesdat;
+  <% diffbase = [] %>
+  <% precyc = @obs_chg.precycnum %>
+  <% precyc.downto(precyc - 1) do |cyci| -%>
+    <% bd = Bdcycle.find_by_cyclenum cyci -%>
+    <% avals, vvals = bd.get_avg_values(128, true) -%>
+    seriesdat = {
+        name: <%= cyci %>,
+        marker: { symbol: 'circle' },
+        data: <%= avals.to_json %>
+      };
+    ampchartopts.series.push( seriesdat );
+    <% afft = Cfft(avals) %>
+    seriesdat = {
+        name: <%= cyci %>,
+        marker: { symbol: 'circle' },
+        data: <%= afft.slice(0...5).to_json %>
+      };
+    afftchartopts.series.push(seriesdat);
+
+    seriesdat = {
+        name: <%= cyci %>,
+        marker: { symbol: 'circle' },
+        data: <%= vvals.to_json %>
+      };
+    voltchartopts.series.push( seriesdat );
+
+    <% if cyci == precyc %>
+        <% diffbase = Array.new( avals ) %>
+    <% else %>
+      <% fftda = Arr.diff( Cfft(diffbase), Cfft(avals) ) %>
+      seriesdat = {
+          name: <%= "\"End #{cyci - precyc}\"" %>,
+          marker: { symbol: 'circle' },
+          data: <%= fftda.slice(0...5).to_json %>
+      };
+      dafftchartopts.series.push(seriesdat);
+    <% end %>
+  <% end -%>
+
+  <% postcyc = @obs_chg.postcycnum %>
+  <% (postcyc).upto(postcyc + 1) do |cyci| -%>
+    <% bd = Bdcycle.find_by_cyclenum cyci -%>
+    <% avals, vvals = bd.get_avg_values(128, true) -%>
+      seriesdat = {
+        name: <%= cyci %>,
+        marker: { symbol: 'square' },
+        data: <%= avals.to_json %>
+      };
+      ampchartopts.series.push( seriesdat );
+
+      <% afft = Cfft(avals) %>
+      seriesdat = {
+        name: <%= cyci %>,
+        marker: { symbol: 'square' },
+        data: <%= afft.slice(0...5).to_json %>
+      };
+      afftchartopts.series.push(seriesdat);
+
+      seriesdat = {
+        name: <%= cyci %>,
+        marker: { symbol: 'triangle' },
+        data: <%= vvals.to_json %>
+      };
+      voltchartopts.series.push( seriesdat );
+      <% fftda = Arr.diff( Cfft(diffbase), Cfft(avals) ) %>
+      seriesdat = {
+        name: <%= "\"Beg + #{cyci - postcyc}\"" %>,
+        marker: { symbol: 'square' },
+        data: <%= fftda.slice(0...5).to_json %>
+      };
+      dafftchartopts.series.push(seriesdat);
+  <% end -%>
+
+  document.observe("dom:loaded", function() {
+    new Highcharts.Chart( ampchartopts );
+    new Highcharts.Chart( voltchartopts );
+    new Highcharts.Chart( afftchartopts );
+    new Highcharts.Chart( dafftchartopts );
+  });
+</script>
+
+<%= link_to "Back", :back %>

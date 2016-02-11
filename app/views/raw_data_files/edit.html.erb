@@ -1,0 +1,43 @@
+<h1>Editing raw_data_file</h1>
+Highest cycle number seen <%= @hicycnum.cyclenum unless @hicycnum.nil? %>
+
+<% form_for(@raw_data_file) do |f| %>
+  <%= f.error_messages %>
+
+  <table>
+    <tr>
+      <td>
+	<%= f.label 'Basename' %><br />
+	<%= f.text_field :bname %>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+	<%= f.label 'Samples per half cycle' %><br />
+	<%= f.text_field :samps_per_half_cycle %>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+	<%= f.label 'Data Channels' %><br />
+	<%= f.text_field :data_channels %>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+	<%= f.label 'Base cycle' %><br />
+	<%= f.text_field :base_cyclenum %>
+      </td>
+    </tr>
+  </table>
+
+  <p>
+    <%= f.submit 'Update' %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @raw_data_file %> |
+<%= link_to 'Back', raw_data_files_path %>

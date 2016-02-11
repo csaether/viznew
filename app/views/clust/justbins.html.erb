@@ -1,0 +1,49 @@
+<h1>Cluster bins</h1>
+<% form_tag :action => :justbins do %>
+  WattStep: <%= text_field_tag :wattstep, params[:wattstep], :size => 5 %>
+  VarStep: <%= text_field_tag :varstep, params[:varstep], :size => 5 %>
+  RampStep: <%= text_field_tag :rampstep, params[:rampstep], :size => 5 %>
+  HyperRad: <%= text_field_tag :hyperrad, params[:hyperrad], :size => 5 %>
+  BinMin: <%= text_field_tag :binmin, params[:binmin], :size => 5 %>
+  <%= submit_tag "BinSteps" %>
+<% end %>
+
+<table>
+  <tr>
+    <th>InvInertia(cnt)</th>
+    <th>WattMean(stdev)</th>
+    <th>VarMean(stdev)</th>
+    <th>RampMean(stdev)</th>
+    <th>Tuple</th>
+<!--
+    <th>BiggerTup</th>
+    <th>BIMD(cnt)</th>
+    <th>BMeans</th>
+-->
+  </tr>
+  <% binmin = params[:binmin].to_i %>
+  <% @centers.count.times do |i| -%>
+  <% ramdis = @hbins.mdihash.find @centers[i] -%>
+  <% next unless ramdis && ramdis[2] >= binmin -%>  <!--  count -->
+  <% biggy = @hbins.biggest @centers[i] -%>
+  <% next if biggy.nil? || biggy != @centers[i] -%>
+    <tr>
+      <td><%= "#{ramdis[1]}(#{ramdis[2]})" %></td>
+      <td><%= "#{ramdis[3][0][0]}(#{ramdis[3][0][1]})" %></td>
+      <td><%= "#{ramdis[3][1][0]}(#{ramdis[3][1][1]})" %></td>
+      <td><%= "#{ramdis[3][2][0]}(#{ramdis[3][2][1]})" %></td>
+      <td><%= "#{@centers[i][0]}, #{@centers[i][1]}, #{@centers[i][2]}" %></td>
+<!--
+      <% if biggy != @centers[i] -%>
+        <td><%= "#{biggy[0]}, #{biggy[1]}, #{biggy[2]}" %></td>
+        <% bmdi = @hbins.mdihash.find biggy -%>
+	<td><%= "#{bmdi[1]}(#{bmdi[2]})" %></td>
+	<td><%= "#{bmdi[3][0][0]}, #{bmdi[3][1][0]}, #{bmdi[3][2][0]}" %></td>
+      <% end -%>
+-->
+    </tr>
+  <% end -%>
+<!--
+-->
+</table>
+

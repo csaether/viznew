@@ -1,0 +1,5 @@
+<% @sdataA.count.times do |i| -%>
+  <% @sdata=@sdataA[i];@snames=@snamesA[i];@coptsvarname=@coptsvarnameA[i] -%>
+  <%= render :partial => 'achart', :layout => false %>
+<% end -%>
+

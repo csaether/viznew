@@ -1,0 +1,61 @@
+<h1>Watts-Var moments of inertia</h1>
+<% form_tag :action => :mdvar do %>
+  MinDiff: <%= text_field_tag :mindiff %>
+  MaxDiff: <%= text_field_tag :maxdiff %>
+  DeltaPcnt: <%= text_field_tag :deltapcnt %>
+  Scaling: <%= text_field_tag :scaling %>
+  <%= submit_tag "Range limit" %>
+<% end %>
+
+<p id="box", class="bigbox"></p>
+
+<script>
+  var wattdenschart = {
+    chart: { renderTo: "box",
+             zoomType: "xy",
+             defaultSeriesType: "scatter" },
+    title: { text: "Watts versus moment density" },
+    yAxis: [ { title: { text: 'Watt Density' } },
+            { opposite: true,
+              title: { text: 'Vars' } } ],
+    series: []
+  };
+
+  var seriesdat;
+  seriesdat = {
+    name: 'On',
+    color: 'rgba(0,255,0,.7)',
+    data: <%= @onwattdens.to_json %>
+  };
+  wattdenschart.series.push( seriesdat );
+
+  var sdatarr;
+  sdatarr = [
+  <% @onwattdens.each do |ow| -%>
+    <% ow[2].each do |vp| -%>
+      { x: <%= ow[0] -%>,
+        y: <%= vp[0] -%> },
+    <% end -%>
+  <% end -%>
+  ];
+
+  seriesdat = {
+    name: 'VAps',
+    yAxis: 1,
+    data: sdatarr
+  };
+  wattdenschart.series.push( seriesdat );
+
+  seriesdat = {
+    name: 'Inverse Off',
+    color: 'rgba(255,0,0,.7)',
+    data: <%= @invoffwattdens.to_json %>
+  };
+  wattdenschart.series.push( seriesdat );
+
+  document.observe("dom:loaded", function() {
+    new Highcharts.Chart( wattdenschart );
+  });
+</script>
+
+<%= link_to "Back", :back %>

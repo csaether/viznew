@@ -1,0 +1,12 @@
+<h1>Editing pwr_datum</h1>
+
+<% form_for(@pwr_datum) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.submit 'Update' %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @pwr_datum %> |
+<%= link_to 'Back', pwr_data_path %>

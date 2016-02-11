@@ -1,0 +1,40 @@
+<h1>Editing obs_chg</h1>
+<table>
+  <tr>
+    <th>Watt Diff</th>
+    <th>NewPower</th>
+    <th>Ramp</th>
+    <th>Var Diff</th>
+    <th>Time</th>
+    <th>Endcyc</th>
+    <th>Begcyc</th>
+    <th>Tran Cycles</th>
+    <th>What?</th>
+  </tr>
+  <tr>
+    <td><%=h @obs_chg.wattdiff %></td>
+    <td><%=h @obs_chg.pwr_datum.watts %></td>
+    <td><%=h onedecimal(@obs_chg.ramp) %></td>
+    <td><%=h @obs_chg.vardiff %></td>
+    <td><%=h @obs_chg.pwr_datum.dtime.getlocal.asctime %></td>
+    <td><%= @obs_chg.precycnum %></td>
+    <td><%= @obs_chg.postcycnum %></td>
+    <td><%= @obs_chg.trancycs %></td>
+    <td><%=h chgname( @obs_chg ) %></td>
+  </tr>
+<table>
+
+<% form_for(@obs_chg) do |f| %>
+  <%= f.error_messages %>
+<!-- need to do something different if for run on vs run off, right? -->
+  <% if @obs_chg.wattdiff >= 0 %>
+    <%= f.label 'Change signature' %>
+    <%= f.select(:chg_sig, ChgSig.choices(@obs_chg)) %>
+  <% end %>
+  <p>
+    <%= f.submit 'Update' %>
+  </p>
+<% end %>
+<%= link_to 'NewChangeSig', new_chg_sig_path %> |
+<%= link_to 'Show', @obs_chg %> |
+<%= link_to 'Back', :back %>

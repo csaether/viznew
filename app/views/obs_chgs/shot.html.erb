@@ -1,0 +1,163 @@
+<table>
+  <tr>
+    <th>Watt Diff</th>
+    <th>NewPower</th>
+    <th>Ramp</th>
+    <th>VAR Diff</th>
+    <th>Time</th>
+    <th>Endcyc</th>
+    <th>Begcyc</th>
+    <th>Tran Cycles</th>
+    <th>What?</th>
+  </tr>
+  <tr>
+    <td><%=h @obs_chg.wattdiff %></td>
+    <td><%=h @obs_chg.pwr_datum.watts %></td>
+    <td><%=h onedecimal(@obs_chg.ramp) %></td>
+    <td><%=h @obs_chg.vardiff %></td>
+    <td><%=h @obs_chg.pwr_datum.dtime.getlocal.asctime %></td>
+    <td><%= @obs_chg.precycnum %></td>
+    <td><%= @obs_chg.postcycnum %></td>
+    <td><%= @obs_chg.trancycs %></td>
+    <td><%=h chgname( @obs_chg ) %></td>
+    <td><%= link_to "ocpage", ocpageurl(@obs_chg.pwr_datum) %></td>
+    <td><%= link_to 'back', :back %></td>
+  </tr>
+<table>
+  <tr>
+    <td id="cell1", class="chartbox"></td>
+    <td id="cell2", class="chartbox"></td>
+    <td id="cell3", class="chartbox"></td>
+  </tr>
+  <tr>
+    <td id="cell4", class="chartbox"></td>
+    <td id="cell5", class="chartbox"></td>
+    <td id="cell6", class="chartbox"></td>
+  </tr>
+</table>
+
+<script>
+  var ampchartopts = {
+    chart: { renderTo: "cell1",
+               zoomType: "xy",
+               defaultSeriesType: "line" },
+    title: { text: "Volt, amp data" },
+    yAxis: [{  title: { text: 'Voltage level' } },
+            {  opposite: true, 
+               title: { text: 'Amp level' } } ],
+    plotOptions: { series: { marker: { enabled: false } } },
+    series: []
+  };
+
+  var lowfreqcopts = {
+    chart: { renderTo: "cell2",
+             zoomType: "xy",
+             defaultSeriesType: "scatter" },
+    title: { text: "Lowfreq per slice distance from Pre1" },
+    series: []
+  };
+
+  var hidistchartopts = {
+    chart: { renderTo: "cell3",
+               zoomType: "xy",
+               defaultSeriesType: "scatter" },
+    title: { text: "Hifreqs slice distance from Pre1" },
+    series: []
+  };
+
+  var cycpower = {
+    chart: { renderTo: "cell4",
+               zoomType: "xy",
+               defaultSeriesType: "line" },
+    title: { text: "Cycle power" },
+    xAxis: { plotBands: []},
+    plotOptions: { series: { pointStart: 0 } },
+    series: []
+  };
+
+  var slicechartopts = {
+    chart: { renderTo: "cell5",
+               zoomType: "xy",
+               defaultSeriesType: "scatter" },
+    plotOptions: { series: { pointStart: 0, pointInterval: 1 } },
+    title: { text: "One hi spectra slice, Pre1 vs which" },
+    series: []
+  };
+
+  var diffslicechartopts = {
+    chart: { renderTo: "cell6",
+               zoomType: "xy",
+               defaultSeriesType: "scatter" },
+    plotOptions: { series: { pointStart: 0, pointInterval: 1 } },
+    title: { text: "One hi spectra diffs slice, which - Pre1" },
+    series: []
+  };
+
+  var seriesdat;
+
+  seriesdat = {
+      name: "Voltage",
+      data: <%=@vdata[0].to_json %> };
+
+  ampchartopts.series.push( seriesdat );
+
+  <% @cycnum.count.times do |i| -%>
+    seriesdat = {
+      name: "<%= cycname(@obs_chg, @cycnum[i]) %>",
+      marker: { symbol: '<%= cycsym(@obs_chg, @cycnum[i]) %>' },
+      yAxis: 1,
+      data: <%= @adata[i].to_json %> };
+
+    ampchartopts.series.push( seriesdat );
+  <% end %>
+
+  <% @lowdistsa.count.times do |i| -%>
+    seriesdat = {
+      name: "<%= cycname(@obs_chg, @cycnum[i+1]) %>",
+      marker: { symbol: '<%= cycsym(@obs_chg, @cycnum[i+1]) %>' },
+      data: <%= @lowdistsa[i].to_json %> };
+
+    lowfreqcopts.series.push( seriesdat );
+
+  <% end -%>
+
+  <% @hidistsa.count.times do |i| -%>
+    seriesdat = {
+      name: "<%= cycname(@obs_chg, @cycnum[i+1]) %>",
+      marker: { symbol: '<%= cycsym(@obs_chg, @cycnum[i+1]) %>' },
+      data: <%= @hidistsa[i].to_json %> };
+
+    hidistchartopts.series.push( seriesdat );
+
+  <% end -%>
+
+  <% 2.times do |leg| -%>
+    seriesdat = {
+        name: "<%= "Leg#{leg}" %>",
+        data: <%= @cycdata[leg].to_json %> };
+
+        cycpower.series.push( seriesdat );
+  <% end -%>
+
+  cycpower.plotOptions.series.pointStart = <%= @cycnum[0] - 11 %>;
+  cycpower.xAxis.plotBands.push( { color: 'yellow',
+                                   from: <%= @cycnum[1] -%>,
+                                   to: <%= @cycnum[-1] -%> } );
+
+  document.observe("dom:loaded", function() {
+    new Highcharts.Chart( ampchartopts );
+<!--    new Highcharts.Chart( voltchartopts );  -->
+    new Highcharts.Chart( hidistchartopts );
+    new Highcharts.Chart( lowfreqcopts );
+    new Highcharts.Chart( cycpower );
+  });
+</script>
+
+<% form_remote_tag( :url => {:action => 'slicendiff'}, :update => 'cell5') do %>
+  which slice: <%= text_field 'slice', 'which', :size => 3,
+      :value => 0 %>
+  which cyci: <%= text_field 'slice', 'cyci', :size => 8,
+      :value => @cycnum[1] %>
+  <%= hidden_field 'obs_chg', :id %>
+  <%= submit_tag 'doit' %>
+<% end %>

@@ -1,0 +1,59 @@
+<h1>
+<%=h "BurstData cycles for base file #{@bdcycles[0].raw_data_file.bname}" %></h1>
+
+<div id='chart-box-r'> </div>
+<script >
+  document.observe('dom:loaded', function() {
+    new Highcharts.Chart({
+      chart: { renderTo: 'chart-box-r',
+               defaultSeriesType: 'line' },
+      title: { text: 'Voltage' },
+      yAxis: { title: { text: 'ampval'} },
+      series: [
+        <% @bdcycles.count.times do |i| %>
+        {
+          name: <%= @bdcycles[i].cyclenum %>,
+          data: <%= @bdcycles[i].get_values(2)[1].to_json %>
+        } <%= "," if i < (@bdcycles.count - 1) %>
+       <% end -%>
+      ]
+    });
+  });
+</script>
+
+<div id='chart-box'> </div>
+<script >
+  document.observe('dom:loaded', function() {
+    new Highcharts.Chart({
+      chart: { renderTo: 'chart-box',
+               defaultSeriesType: 'line' },
+      title: { text: 'Current' },
+      yAxis: { title: { text: 'ampval'} },
+      series: [
+        <% @bdcycles.count.times do |i| %>
+        {
+          name: <%= @bdcycles[i].cyclenum %>,
+          data: <%= @bdcycles[i].get_values(2)[0].to_json %>
+        } <%= "," if i < (@bdcycles.count - 1) %>
+       <% end -%>
+      ]
+    });
+  });
+</script>
+
+<table>
+  <th>Cycle</th>
+  <th>Offset</th>
+  <th>Count</th>
+
+  <% @bdcycles.each do |bdc| -%>
+  <tr>
+    <td><%= bdc.cyclenum -%></td>
+    <td><%= bdc.foffset -%></td>
+    <td><%= bdc.samplecount -%></td>
+  </tr>
+  <% end -%>
+</table>
+
+<br />
+<%= will_paginate @bdcycles %>

@@ -1,0 +1,32 @@
+<p id="box", class="bigbox"></p>
+
+<script>
+  var wattvarchart = {
+    chart: { renderTo: "box",
+             zoomType: "xy",
+             defaultSeriesType: "scatter" },
+    title: { text: "Watts versus VAR" },
+    series: []
+  };
+
+  var seriesdat;
+  seriesdat = {
+    name: 'On',
+    color: 'rgba(0,255,0,.7)',
+    data: <%= @onwattvars.to_json %>
+  };
+  wattvarchart.series.push( seriesdat );
+
+  seriesdat = {
+    name: 'Inverse Off',
+    color: 'rgba(255,0,0,.7)',
+    data: <%= @invoffwattvars.to_json %>
+  };
+  wattvarchart.series.push( seriesdat );
+
+  document.observe("dom:loaded", function() {
+    new Highcharts.Chart( wattvarchart );
+  });
+</script>
+
+<%= link_to "Back", :back %>

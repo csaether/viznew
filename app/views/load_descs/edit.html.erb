@@ -1,0 +1,32 @@
+<h1>Editing load_desc</h1>
+
+<% form_for(@load_desc) do |f| %>
+  <%= f.error_messages %>
+  <table>
+    <tr>
+      <td><%= f.label "Name" %></td>
+      <td><%= f.text_field :name %></td>
+    </tr>
+    <tr>
+      <td><%= f.label "Avg on watts" %></td>
+      <td><%= f.text_field :avg_on %></td>
+    </tr>
+    <tr>
+      <td><%= f.label "Avg off watts" %></td>
+      <td><%= f.text_field :avg_off %></td>
+    </tr>
+    <tr>
+      <td><%= f.label "Short Duty" %></td>
+      <td><%= f.text_field :short_duty %></td>
+    </tr>
+    <tr>
+      <td><%= f.label "Long Duty" %></td>
+      <td><%= f.text_field :long_duty %></td>
+    </tr>
+  </table>
+    <%= f.submit 'Update' %>
+
+<% end %>
+
+<%= link_to 'Show', @load_desc %> |
+<%= link_to 'Back', load_descs_path %>

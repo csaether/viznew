@@ -1,0 +1,13 @@
+<% cnt = @fft_data[0].fft_spec.spec.length # better be the same -%>
+<% freqs = Array.new(cnt) -%>
+<% mods = Array.new(cnt) -%>
+<% 0.upto(@fft_data[0].fft_spec.spec.length - 1) do |i| -%>
+  <% freqs[i] = i*60 -%>
+  <% mods[i] = freqs[i] % 60 -%>
+<% end -%>
+<%= CSV.generate_line( ['', 'freq'] + freqs ) %>
+<%= CSV.generate_line( ['', 'mod60'] + mods ) %>
+Cyclenum, Type
+<% @fft_data.each do |fd| -%>
+   <%= CSV.generate_line( [fd.cyclenum, fd.ftype] + fd.fft_spec.spec ) %>
+<% end -%>

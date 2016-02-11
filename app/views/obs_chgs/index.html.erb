@@ -1,0 +1,76 @@
+<h2>Listing obs_chgs:  <%= link_to 'ChangeSigs', chg_sigs_path %>,
+ <%= link_to 'RunsList', runs_path %>,
+ <%= link_to 'WattVARChart', :action => :wattvar %>
+</h2>
+<% unless params[:mindiff].blank? %>
+<p><strong>
+<%=h "Range limits are #{params[:mindiff]} to #{params[:maxdiff]}" %>
+</strong> | 
+<% end %>
+<%= link_to 'CsvOut', :action => :csvout,
+       :mindiff => params[:mindiff], :maxdiff => params[:maxdiff] %>
+<%= will_paginate @obs_chgs, :inner_window => 10 %>
+<table>
+  <tr>
+    <th><%= link_to 'Watt Diff', :action => :index,
+      :mindiff => params[:mindiff], :maxdiff => params[:maxdiff],
+      :sort => 'wattdiff desc' %></th>
+    <th>NewPower</th>
+    <th><%= link_to 'Ramp', :action => :index,
+      :mindiff => params[:mindiff], :maxdiff => params[:maxdiff],
+      :sort => 'ramp desc' %></th>
+    <th>VarDiff</th>
+    <th><%= link_to 'Time', :action => :index,
+      :mindiff => params[:mindiff], :maxdiff => params[:maxdiff],
+      :sort => 'id' %></th>
+    <th>Tran</th>
+    <th>What?</th>
+    <th>Training</th>
+  </tr>
+<% unless @conditions.nil? %>
+<tr>
+  <td><%=h meandev(@wattmd) %></td>
+  <td>-----</td>
+  <td><%=h meandev(@rampmd) %></td>
+  <td><%=h meandev(@varmd) %></td>
+  <td>-----</td>
+  <td><%=h meandev(@tranmd) %></td>
+</tr>
+<% end %>
+<% @obs_chgs.each do |obs_chg| %>
+  <tr>
+    <td><%=h obs_chg.wattdiff %></td>
+    <td><%=h obs_chg.pwr_datum.watts %></td>
+    <td><%=h onedecimal(obs_chg.ramp) %></td>
+    <td><%=h obs_chg.vardiff %></td>
+    <td><%=h obs_chg.pwr_datum.dtime.getlocal.asctime %></td>
+    <td><%= obs_chg.trancycs %></td>
+    <td>
+    <% if obs_chg.wattdiff > 0 %>
+      <b><%= chgname( obs_chg ) %></b>
+    <% else %>
+      <i><%= chgname( obs_chg ) %></i>
+    <% end %>
+    </td>
+    <td><%= obs_chg.training if obs_chg.training %></td>
+    <td><%= runmatchlink( obs_chg ) %></td>
+<!--    <td><%= link_to 'Show stuff', obs_chg %>  -->
+    <td><%= link_to 'Stuff', :action => 'shof1', :id => obs_chg %>
+    <td><%= link_to 'Transition', :action => 'shot', :id => obs_chg %>
+    <% if obs_chg.wattdiff > 0 -%>
+      <% if obs_chg.run_ons.count > 0 %>
+        <td><%= link_to 'EditRun', edit_obs_chg_path(obs_chg) %>
+      <% else %>
+        <td><%= link_to 'StartRun', edit_obs_chg_path(obs_chg) %>
+      <% end %>
+    <% end -%>
+  </tr>
+<% end %>
+</table>
+<br />
+<% form_tag :action => :range do %>
+  MinDiff: <%= text_field_tag :mindiff %>
+  MaxDiff: <%= text_field_tag :maxdiff %>
+  <%= submit_tag "Limit Range" %>
+<% end %>
+<%= will_paginate @obs_chgs, :inner_window => 10 %>

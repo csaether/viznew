@@ -1,0 +1,48 @@
+<h1>Cluster bins</h1>
+<% form_tag :action => :bins do %>
+  WattStep: <%= text_field_tag :wattstep, params[:wattstep], :size => 5 %>
+  VarStep: <%= text_field_tag :varstep, params[:varstep], :size => 5 %>
+  RampStep: <%= text_field_tag :rampstep, params[:rampstep], :size => 5 %>
+  HyperRad: <%= text_field_tag :hyperrad, params[:hyperrad], :size => 5 %>
+  BinMin: <%= text_field_tag :binmin, params[:binmin], :size => 5 %>
+  <%= submit_tag "BinSteps" %>
+<% end %>
+
+<% params[:action] = "makesigs" %> <!-- this must be evil... -->
+<h2><%= link_to 'GenerateChgSigs', :params => params %></h2>
+
+<table>
+  <tr>
+    <th>Cnt, Dens, MassD</th>
+    <th>WattMean, stdev</th>
+    <th>VarMean, stdev</th>
+    <th>RampMean, stdev</th>
+<!--
+    <th>BiggerTup</th>
+    <th>BIMD(cnt)</th>
+    <th>BMeans</th>
+-->
+  </tr>
+  <% @idmdcnt.count.times do |i| -%>
+    <% bdis, bcs = ChgSig.closetup( @means[i] ) -%>
+    <tr>
+      <td><%= "#{@idmdcnt[i][2]}, #{@idmdcnt[i][0]},#{@idmdcnt[i][1]}" %></td>
+      <td><%= "#{@means[i][0]}, #{@stdevs[i][0]}" %></td>
+      <td><%= "#{@means[i][1]}, #{@stdevs[i][1]}" %></td>
+      <td><%= "#{@means[i][2]}, #{@stdevs[i][2]}" %></td>
+      <% # next unless (i & 1) == 1 -%>
+      <% unless bdis > 10.0 -%>
+        <td><%= "#{bdis} [#{wvrtxt(bcs)}] #{bcs.name}" %></td>
+      <% else -%>
+        <td>------</td>
+      <% end -%>
+      <td><%= link_to 'MakeClusterSig', :action => :clusig,
+	:wattchg => @means[i][0], :wattchg_sdev => @stdevs[i][0],
+	:varchg => @means[i][1], :varchg_sdev => @stdevs[i][1],
+	:ramp => @means[i][2], :ramp_sdev => @stdevs[i][2]  %></td>
+    </tr>
+  <% end -%>
+<!--
+-->
+</table>
+

@@ -1,0 +1,23 @@
+<p>
+  <b>TimeOn:</b>
+  <%=h @run.on_chg.pwr_datum.dtime.getlocal.asctime %><br />
+  <b>WattsUp:</b>
+  <%=h @run.on_chg.wattdiff %><br />
+  <b>VARChange:</b>
+  <%=h @run.on_chg.vardiff %>
+</p>
+
+<% if @run.off_chg %>
+<p>
+  <b>TimeOff:</b>
+  <%=h @run.off_chg.pwr_datum.dtime.getlocal.asctime %><br />
+  <b>WattsDown:</b>
+  <%=h @run.off_chg.wattdiff %><br />
+  <b>VARChange:</b>
+  <%=h @run.off_chg.vardiff %>
+</p>
+<% end %>
+
+
+<%= link_to 'List', runs_path %>
+<%= link_to 'Back', :back %>

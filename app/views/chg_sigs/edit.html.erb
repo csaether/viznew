@@ -1,0 +1,55 @@
+<h1>Editing chg_sig <em><%=h @chg_sig.name %></em></h1>
+
+<% form_for(@chg_sig) do |f| %>
+  <%= f.error_messages %>
+<table>
+
+  <tr>
+    <td>    <%= f.label "Loads" %></td>
+    <td>    <%= f.collection_select :load_desc_ids, @loads, :id, :name,
+		{:selected => @chg_sig.load_desc_ids},
+                {:multiple => true} %></td>
+  </tr>
+  <tr>
+    <td>    <%= f.label "Watt change" %></td>
+    <td>    <%= f.text_field  :wattchg %></td>
+  </tr>
+  <tr>
+    <td>    <%= f.label "Watt change stdev" %></td>
+    <td>    <%= f.text_field  :wattchg_sdev %></td>
+  </tr>
+  <tr>
+    <td>    <%= f.label "Var change" %></td>
+    <td>    <%= f.text_field  :varchg %></td>
+  </tr>
+  <tr>
+    <td>    <%= f.label "Var change stdev" %></td>
+    <td>    <%= f.text_field  :varchg_sdev %></td>
+  </tr>
+  <tr>
+    <td>    <%= f.label "Ramp" %></td>
+    <td>    <%= f.text_field  :ramp %></td>
+  </tr>
+  <tr>
+    <td>    <%= f.label "Ramp stdev" %></td>
+    <td>    <%= f.text_field  :ramp_sdev %></td>
+  </tr>
+<!--
+  <tr>
+    <td>    <%= f.label "Transition cycles" %></td>
+    <td>    <%= f.text_field  :trans %></td>
+  </tr>
+  <tr>
+    <td>    <%= f.label "Trans stdev" %></td>
+    <td>    <%= f.text_field  :trans_sdev %></td>
+  </tr>
+-->
+</table>
+  <p>
+    <%= f.submit 'Update' %>
+  </p>
+<% end %>
+
+<%= link_to 'List', chg_sigs_path %> |
+<%= link_to 'New Load Desc', :controller => :load_descs, :action => :new,
+            :editchgsig => @chg_sig  %>

@@ -1,0 +1,149 @@
+<table>
+  <tr>
+    <th>Watt Diff</th>
+    <th>NewPower</th>
+    <th>Ramp</th>
+    <th>Var Diff</th>
+    <th>Time</th>
+    <th>Endcyc</th>
+    <th>Begcyc</th>
+    <th>Tran Cycles</th>
+    <th>What?</th>
+  </tr>
+  <tr>
+    <td><%=h @obs_chg.wattdiff %></td>
+    <td><%=h @obs_chg.pwr_datum.watts %></td>
+    <td><%=h onedecimal(@obs_chg.ramp) %></td>
+    <td><%=h @obs_chg.vardiff %></td>
+    <td><%=h @obs_chg.pwr_datum.dtime.getlocal.asctime %></td>
+    <td><%= @obs_chg.precycnum %></td>
+    <td><%= @obs_chg.postcycnum %></td>
+    <td><%= @obs_chg.trancycs %></td>
+    <td><%=h chgname( @obs_chg ) %></td>
+    <td><%= link_to "ocpage", ocpageurl(@obs_chg.pwr_datum) %></td>
+    <td><%= link_to 'back', :back %></td>
+  </tr>
+<table>
+  <tr>
+    <td id="cell1", class="chartbox"></td>
+    <td id="cell2", class="chartbox"></td>
+    <td id="cell3", class="chartbox"></td>
+  </tr>
+  <tr>
+    <td id="cell4", class="chartbox"></td>
+    <td id="cell5", class="chartbox"></td>
+    <td id="cell6", class="chartbox"></td>
+  </tr>
+</table>
+
+<script>
+  var gchartopts = {
+    chart: { renderTo: "cell1",
+             zoomType: "xy",
+             defaultSeriesType: "scatter" },
+    title: { text: "Pre and Post conductance" },
+    yAxis: [{  title: { text: 'Magnitude' } }],
+    series: []
+  };
+
+  var gdiffchartopts = {
+    chart: { renderTo: "cell2",
+             zoomType: "xy",
+             defaultSeriesType: "scatter" },
+    title: { text: "Post minus Pre conductance" },
+    yAxis: [{  title: { text: 'Magnitude diff' } }],
+    series: []
+  };
+
+  var pwrchartopts = {
+    chart: { renderTo: "cell3",
+             zoomType: "xy",
+             defaultSeriesType: "scatter" },
+    title: { text: "Post minus Pre power" },
+    yAxis: [{  title: { text: 'power' } }],
+    series: []
+  };
+
+  var gfftdiff = {
+    chart: { renderTo: "cell4",
+             zoomType: "xy",
+             defaultSeriesType: "scatter" },
+    title: { text: "Post minus Pre G fft magnitudes" },
+    series: []
+  };
+
+  var pfftdiff = {
+    chart: { renderTo: "cell5",
+             zoomType: "xy",
+             defaultSeriesType: "scatter" },
+    title: { text: "Post minus Pre Pwr fft magnitudes" },
+    series: []
+  };
+
+  var gfftmid = {
+    chart: { renderTo: "cell6",
+             zoomType: "xy",
+             defaultSeriesType: "scatter" },
+    title: { text: "Post minus Pre G mid fft " },
+    series: []
+  };
+
+  var seriesdat;
+
+  <% @gdat.count.times do |i| -%>
+    seriesdat = {
+      data: <%= @gdat[i].to_json %>
+    };
+
+    gchartopts.series.push( seriesdat );
+  <% end %>
+
+  seriesdat = {
+    data: <%= Arr.diff( @gdat[0], @gdat[1] ).to_json %>
+  };
+
+  gdiffchartopts.series.push( seriesdat );
+
+  seriesdat = {
+    data: <%= Arr.diff( @pdat[0], @pdat[1] ).to_json %>
+  };
+
+  pwrchartopts.series.push( seriesdat );
+
+  seriesdat = {
+    data: <%= Arr.diff( Cfft(@gdat[0]), Cfft(@gdat[1]) ).to_json %>
+  };
+
+  gfftdiff.series.push( seriesdat );
+
+  seriesdat = {
+    data: <%= Arr.diff( Cfft(@pdat[0]), Cfft(@pdat[1]) ).to_json %>
+  };
+
+  pfftdiff.series.push( seriesdat );
+
+  seriesdat = {
+    data: <%= Arr.diff( Cfft(@pdat[0].slice(8,16)),
+                        Cfft(@pdat[1].slice(8,16)) ).to_json %>
+  };
+
+  gfftmid.series.push( seriesdat );
+
+  document.observe("dom:loaded", function() {
+    new Highcharts.Chart( gchartopts );
+    new Highcharts.Chart( gdiffchartopts );
+    new Highcharts.Chart( pwrchartopts );
+    new Highcharts.Chart( gfftdiff );
+    new Highcharts.Chart( pfftdiff );
+    new Highcharts.Chart( gfftmid );
+  });
+</script>
+
+<% form_remote_tag( :url => {:action => 'slicendiff'}, :update => 'cell5') do %>
+  which slice: <%= text_field 'slice', 'which', :size => 3,
+      :value => 0 %>
+  which cyci: <%= text_field 'slice', 'cyci', :size => 8,
+      :value => 1 %>
+  <%= hidden_field 'obs_chg', :id %>
+  <%= submit_tag 'doit' %>
+<% end %>

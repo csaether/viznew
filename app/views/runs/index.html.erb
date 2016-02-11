@@ -1,0 +1,62 @@
+<h1>Listing runs for <em><%=h @which %></em></h1>
+<%= link_to 'Change sigs', chg_sigs_path %>
+<%= link_to 'All runs', runs_path %>
+<%= link_to 'Close runs', :action => :close,
+    :load_desc_id => params[:load_desc_id] %>
+<%= will_paginate @runs %>
+<table>
+  <tr>
+    <th>OnTime</th>
+    <th>NewPower</th>
+    <th>What</th>
+    <th>WattsOn</th>
+    <th>WattsOff</th>
+    <th>RampOn</th>
+    <th>RampOff</th>
+    <th>OnTrans</th>
+    <th>OffTrans</th>
+    <th>Duration</th>
+  </tr>
+
+<% unless @conditions.nil? %>
+<tr>
+  <td>---</td>
+  <td>---</td>
+  <td>---</td>
+  <td><%=h meandev(@onwattmd) %></td>
+  <td><%=h meandev(@offwattmd) %></td>
+  <td><%=h meandev(@onrampmd) %></td>
+  <td>---</td>
+  <td><%=h meandev(@ontranmd) %></td>
+  <td><%=h meandev(@offtranmd) %></td>
+  <td><%=h meandev(@durmd) %></td>
+</tr>
+<% end %>
+
+<% @runs.each do |run| %>
+  <tr>
+    <td><%=h run.start_time.getlocal.asctime %></td>
+    <td><%=h run.on_chg.pwr_datum.watts  %></td>
+    <td><%=h run.load_desc.name %></td>
+    <td><%= link_to( run.load_desc.wattdiff_part( run.on_chg ).to_s ,
+            :controller => 'obs_chgs', :action => 'shof1', :id => run.on_chg ) %></td>
+    <td><%= run.off_chg.nil? ? '------' : link_to( run.off_chg.wattdiff,
+            :controller => 'obs_chgs', :action => 'shof1', :id => run.off_chg ) %></td>
+    <td><%=h onedecimal(run.on_chg.ramp) %></td>
+    <td><%=h run.off_chg.nil? ? '------' : onedecimal(run.off_chg.ramp) %></td>
+    <td><%=h onedecimal(run.on_chg.trancycs) %></td>
+    <td><%=h run.off_chg.nil? ? '------' : onedecimal(run.off_chg.trancycs) %></td>
+    <% if run.duration.nil? %>
+      <td><%= link_to 'FindMatch', fwdmatch_run_path(run) %></td>
+    <% else %>
+      <td><%=h hms run.duration %></td>
+    <% end %>
+    <td><%= link_to 'Show', run %></td>
+    <td><%= link_to 'ObsChgs page', ocpageurl(run.on_chg.pwr_datum) %></td>
+    <td><%= link_to 'Edit', edit_obs_chg_path(run.on_chg) %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+<%= will_paginate @runs %>

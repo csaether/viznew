@@ -1,0 +1,42 @@
+<h2>Listing chg_sigs: <%= link_to 'Observed Changes list', obs_chgs_path %>, 
+<%= link_to 'Runs list', runs_path %>
+</h2>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>WattChg/Dev</th>
+    <th>VarChg/Dev</th>
+    <th>Ramp/Dev</th>
+    <th>Trans/Dev</th>
+  </tr>
+
+<% @chg_sigs.each do |chg_sig| %>
+  <tr>
+    <td><%= link_to "#{chg_sig.name}", :action => :index,
+        :controller => :load_descs,
+	:load_desc_ids => chg_sig.load_desc_ids %></td>
+    <% if chg_sig.wattchg > 0 %>
+      <td><b><%=h meandev [chg_sig.wattchg, chg_sig.wattchg_sdev] %></b></td>
+    <% else %>
+      <td><i><%=h meandev [chg_sig.wattchg, chg_sig.wattchg_sdev] %></i></td>
+    <% end %>
+    <td><%=h meandev [chg_sig.varchg, chg_sig.varchg_sdev] %></td>
+    <td><%=h meandev [chg_sig.ramp, chg_sig.ramp_sdev] %></td>
+    <td><%=h meandev [chg_sig.trans, chg_sig.trans_sdev] %></td>
+
+    <td><%= link_to 'Edit', edit_chg_sig_path(chg_sig) %></td>
+    <% chg_sig.load_descs.each do |ld| %>
+      <td><%= link_to "#{ld.runs.count} #{ld.name} runs",
+	      :controller => :runs, :load_desc_id => ld.id %></td>
+    <% end %>
+    <td><%= link_to( 'Destroy', chg_sig, :confirm => 'Are you sure?',
+        :method => :delete ) if chg_sig.load_descs.empty? %></td>
+    <td><%= link_to 'ZapRuns', resetruns_chg_sig_path(chg_sig) %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+<%= link_to 'New chg_sig', new_chg_sig_path %>
+ | <%= link_to 'List Loads', load_descs_path %>

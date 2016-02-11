@@ -1,0 +1,15 @@
+<h1>New on_run</h1>
+
+<% form_for(@on_run) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :complete %><br />
+    <%= f.text_field :complete %>
+  </p>
+  <p>
+    <%= f.submit 'Create' %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', on_runs_path %>

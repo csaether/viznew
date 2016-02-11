@@ -1,0 +1,65 @@
+<h1>
+<%=h "BurstData cycles for base file #{@bdcycles[0].raw_data_file.bname}" %></h1>
+
+<!-- A better version.  Put the charts in as table entries using a class
+  to set the width, padding, etc, but just fabricate an id here.  Also,
+  generate all of the charts within the single document.observe dom.loaded
+  deal.  -->
+
+<table>
+ <tr>
+  <td id='cell1' class='chartbox'> </td>
+  <td id='cell2' class='chartbox'> </td>
+ </tr>
+</table>
+
+<script >
+  document.observe('dom:loaded', function() {
+    new Highcharts.Chart({
+      chart: { renderTo: 'cell1',
+               zoomType: "xy",
+               defaultSeriesType: 'line' },
+      title: { text: 'Current' },
+      series: [
+        <% @bdcycles.count.times do |i| %>
+        {
+          name: <%= @bdcycles[i].cyclenum %>,
+          data: <%= @bdcycles[i].get_avg_values[0].to_json %>
+        } <%= "," if i < (@bdcycles.count - 1) %>
+       <% end -%>
+      ]
+    });
+
+    new Highcharts.Chart({
+      chart: { renderTo: 'cell2',
+               zoomType: "xy",
+               defaultSeriesType: 'line' },
+      title: { text: 'Voltage' },
+      series: [
+        <% @bdcycles.count.times do |i| %>
+        {
+          name: <%= @bdcycles[i].cyclenum %>,
+          data: <%= @bdcycles[i].get_avg_values[1].to_json %>
+        } <%= "," if i < (@bdcycles.count - 1) %>
+       <% end -%>
+      ]
+    });
+  });
+</script>
+
+<table>
+  <th>Cycle</th>
+  <th>Offset</th>
+  <th>Count</th>
+
+  <% @bdcycles.each do |bdc| -%>
+  <tr>
+    <td><%= bdc.cyclenum -%></td>
+    <td><%= bdc.foffset -%></td>
+    <td><%= bdc.samplecount -%></td>
+  </tr>
+  <% end -%>
+</table>
+
+<br />
+<%= will_paginate @bdcycles %>

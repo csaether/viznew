@@ -1,0 +1,35 @@
+<h1>Frequency spectra</h1>
+<table>
+  <tr>
+    <th>Cyclenum</th>
+    <th>Type</th>
+    <% 0.upto(@fft_data[0].fft_spec.spec.length - 1) do |i| -%>
+    <th><%= i*60 -%></th>
+    <% end -%>
+  </tr>
+
+<% @fft_data.each do |fd| -%>
+<% next if fd.ftype == 'V' -%>
+  <tr>
+    <td><%=h fd.cyclenum %></td>
+    <td><%=h fd.ftype %></td>
+    <% 0.upto(fd.fft_spec.spec.length - 1) do |i| -%>
+      <td><%=h fd.fft_spec.spec[i] -%></td>
+    <% end -%>
+  </tr>
+<% end -%>
+<% @fft_data.each do |fd| -%>
+<% next if fd.ftype == 'A' -%>
+  <tr>
+    <td><%=h fd.cyclenum %></td>
+    <td><%=h fd.ftype %></td>
+    <% 0.upto(fd.fft_spec.spec.length - 1) do |i| -%>
+      <td><%=h fd.fft_spec.spec[i] -%></td>
+    <% end -%>
+  </tr>
+<% end -%>
+
+</table>
+<br />
+
+<%= will_paginate @fft_data, :inner_window => 12 %>

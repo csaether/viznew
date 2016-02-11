@@ -1,0 +1,31 @@
+<h1>Cluster finder</h1>
+<% form_tag :action => :index do %>
+  MinDiff: <%= text_field_tag :mindiff %>
+  MaxDiff: <%= text_field_tag :maxdiff %>
+  <%= submit_tag "Limit Range" %>
+<% end %>
+
+<table>
+  <tr>
+    <th>Wattdiff</th>
+    <th>Count</th>
+    <th>VARdiff</th>
+    <th>Count</th>
+  </tr>
+
+<% @gravpeaks.each do |vp| %>
+  <tr>
+    <td><%= vp[0] %></td>
+    <td><%= vp[2] %></td>
+  </tr>
+  <% vp[3].each do |vap| %>
+    <tr>
+      <td>---</td>
+      <td>---</td>
+      <td><%= vap[0] %></td>
+      <td><%= vap[1] %></td>
+    </tr>
+  <% end %>
+<% end %>
+</table>
+

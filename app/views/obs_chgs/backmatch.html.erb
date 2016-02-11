@@ -1,0 +1,37 @@
+<h2>Looking back for possible completion of open runs</h2>
+<p>
+  <b>Off Event Time:</b>
+  <%=h @obs_chg.pwr_datum.dtime.getlocal.asctime %></br>
+  <b>Watt Change:</b>
+  <%=h @obs_chg.wattdiff %></br>
+  <b>VarChange:</b>
+  <%=h @obs_chg.vardiff %>
+</p>
+
+<table>
+  <tr>
+    <th>Distance</th>
+    <th>TimeSince</th>
+    <th>What</th>
+<!--    <th>LagChange</th> -->
+    <th>VarDiff</th>
+  </tr>
+
+<% @candidatesA.each do |dist, run, cs| %>
+  <tr>
+    <td><%= dist %></td>
+    <% secdiff = @obs_chg.pwr_datum.dtime - run.on_chg.pwr_datum.dtime %>
+    <% hours = (secdiff/3600).to_i %>
+    <% mins = ((secdiff/60) % 60).to_i %>
+    <% secs = (secdiff % 60).to_i %>
+    <td><%=h "#{hours}:#{mins}:#{secs}" %></td>
+    <td><%=h run.load_desc.name %></td>
+    <td><%=h run.on_chg.vardiff %></td>
+    <td><%= link_to 'complete', :action => :endrun,
+            :runid => run, :offcsid => cs  %></td>
+    <td><%= link_to 'GotoObsChgs', ocpageurl(run.on_chg.pwr_datum) %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'GoBack', :back %>

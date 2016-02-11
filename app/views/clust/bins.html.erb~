@@ -1,0 +1,39 @@
+<h1>Cluster bins</h1>
+<% form_tag :action => :bins do %>
+  WattStep: <%= text_field_tag :wattstep, params[:wattstep], :size => 5 %>
+  VarStep: <%= text_field_tag :varstep, params[:varstep], :size => 5 %>
+  RampStep: <%= text_field_tag :rampstep, params[:rampstep], :size => 5 %>
+  <%= submit_tag "BinSteps" %>
+<% end %>
+
+<table>
+  <tr>
+    <th>WattCenter</th>
+    <th>VarCenter</th>
+    <th>RampCenter</th>
+    <th>Box 1 idens</th>
+    <th>Box 1 idprod</th>
+    <th>Box 1 Count</th>
+    <th>Box 3 idens</th>
+    <th>Box 3 idprod</th>
+    <th>Box 3 Count</th>
+  </tr>
+
+  <% @centers.count.times do |i| -%>
+  <% next unless @box3mdis[i][2] > 1 -%>
+    <tr>
+      <td><%= @centers[i][0] %></td>
+      <td><%= @centers[i][1] %></td>
+      <td><%= @centers[i][2] %></td>
+      <td><%= @box1mdis[i][0] %></td>
+      <td><%= @box1mdis[i][1] %></td>
+      <td><%= @box1mdis[i][2] %></td>
+      <td><%= @box3mdis[i][0] %></td>
+      <td><%= @box3mdis[i][1] %></td>
+      <td><%= @box3mdis[i][2] %></td>
+    </tr>
+  <% end -%>
+<!--
+-->
+</table>
+

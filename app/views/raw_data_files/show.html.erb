@@ -1,0 +1,12 @@
+<p>
+  <b>Fname:</b>
+  <%=h @raw_data_file.bname %>
+</p>
+<p>
+  <b>Base Cycle:</b>
+  <%=h @raw_data_file.base_cyclenum %>
+</p>
+
+
+<%= link_to 'Edit', edit_raw_data_file_path(@raw_data_file) %> |
+<%= link_to 'Back', raw_data_files_path %>

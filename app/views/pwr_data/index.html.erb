@@ -1,0 +1,25 @@
+<h1>Listing pwr_data</h1>
+<table>
+  <tr>
+    <th>Watts</th>
+    <th>- -Var- -</th>
+    <th>DTime</th>
+    <th>Addcycles</th>
+  </tr>
+
+<% @pwr_data.each do |pd| %>
+  <tr>
+    <td><%=h pd.watts %></td>
+    <td><%=h pd.vars.nil? ? '---' : onedecimal(pd.vars) %></td>
+    <td><%=h pd.dtime.getlocal.asctime %></td>
+    <td><%=h pd.addcycles.nil? ? '---' : pd.addcycles %></td>
+    <td><%= link_to 'Show', pd %></td>
+    <td><%= link_to 'Edit', edit_pwr_datum_path(pd) %></td>
+    <td><%= link_to 'Destroy', pd, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+
+</table>
+<br />
+
+<%= will_paginate @pwr_data, :inner_window => 10 %>

@@ -1,0 +1,34 @@
+<h1>Listing raw_data_files</h1>
+Highest cycle number seen <%= @hicycnum.cyclenum unless @hicycnum.nil? %>
+<table>
+  <tr>
+    <th>Fname</th>
+    <th>NumLegs</th>
+    <th>DataChannels</th>
+    <th>BaseCycle</th>
+    <th>SamplesPerHalfCycle</th>
+  </tr>
+
+<% @raw_data_files.each do |raw_data_file| %>
+  <tr>
+    <td><%=h raw_data_file.bname %></td>
+    <td><%=h raw_data_file.leg_maps.count %></td>
+    <td><%=h raw_data_file.data_channels %></td>
+    <td><%=h raw_data_file.base_cyclenum %></td>
+    <td><%=h raw_data_file.samps_per_half_cycle %></td>
+    <td><%= link_to 'Show', raw_data_file %></td>
+    <td><%= link_to 'Edit', edit_raw_data_file_path(raw_data_file) %></td>
+    <td>
+      <% unless raw_data_file.bdcycles.count > 0 -%>
+        <%= link_to 'Destroy', raw_data_file, :confirm => 'Are you sure?', :method => :delete %>
+      <% end -%>
+    </td>
+    <td><%= link_to 'Process files', :action => 'process_files', :id => raw_data_file.id %></td>
+    <td><%= link_to 'Add cycle data', :action => 'add_cycles', :id => raw_data_file.id %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New raw_data_file', new_raw_data_file_path %>

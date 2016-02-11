@@ -1,0 +1,35 @@
+<h1>Listing load descriptors</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>AvgOn</th>
+    <th>AvgOff</th>
+    <th>ShortDuty</th>
+    <th>LongDuty</th>
+  </tr>
+
+<% @load_descs.each do |load_desc| %>
+  <tr>
+    <td><%=h load_desc.name %></td>
+    <td><%=h load_desc.avg_on %></td>
+    <td><%=h load_desc.avg_off %></td>
+    <td><%=h hms(load_desc.short_duty) %></td>
+    <td><%=h hms(load_desc.long_duty) %></td>
+    <td><%= link_to 'Edit', edit_load_desc_path(load_desc) %></td>
+    <td><%= link_to "List #{load_desc.runs.count} runs", :controller => :runs,
+        :load_desc_id => load_desc.id %></td>
+    <td><%= link_to( 'Destroy', load_desc, :confirm => 'Are you sure?',
+        :method => :delete ) if load_desc.runs.empty? %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New load_desc', new_load_desc_path %>
+ | <%= link_to 'ChangeSigs', chg_sigs_path %>
+<% if !params[:load_desc_ids].blank? %>
+ | <%= link_to 'All loads', load_descs_path %>
+<% end %>
+

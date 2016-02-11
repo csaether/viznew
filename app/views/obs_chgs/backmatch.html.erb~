@@ -1,0 +1,74 @@
+<p>
+  <b>What: </b>
+  <%=h @run.load_desc.name %></br>
+  <b>TimeOn:</b>
+  <%=h @run.on_chg.pwr_datum.dtime.getlocal.asctime %></br>
+  <b>WattsUp:</b>
+  <%=h @run.on_chg.wattdiff %></br>
+  <b>LagChange:</b>
+  <%=h (@run.on_chg.lagchg*10).to_i/10.0 %>
+</p>
+
+<table>
+  <tr>
+    <th>Distance</th>
+    <th>TimeSince</th>
+    <th>OffWatts</th>
+    <th>LagChange</th>
+    <th>OffRamp</th>
+  </tr>
+
+<% @candidatesA.each do |dist, oc, cs| %>
+  <tr>
+    <td><%= dist %></td>
+    <% secdiff = oc.pwr_datum.dtime - @run.on_chg.pwr_datum.dtime %>
+    <% hours = (secdiff/3600).to_i %>
+    <% mins = ((secdiff/60) % 60).to_i %>
+    <% secs = (secdiff % 60).to_i %>
+    <td><%=h "#{hours}:#{mins}:#{secs}" %></td>
+    <td><%=h oc.wattdiff %></td>
+    <td><%=h (oc.lagchg*10).to_i/10.0 %></td>
+    <td><%=h (oc.ramp*10).to_i/10.0 %></td>
+    <td><%= link_to 'complete', :action => :add_chg,
+            :offocid => oc, :offcsid => cs  %></td>
+    <td><%= link_to 'power data', :action => :fwdmatch, :ocid => oc %></td>
+    <td><%= link_to 'GotoObsChgs', ocpageurl(oc.pwr_datum) %></td>
+  </tr>
+<% end %>
+</table>
+<% form_tag :action => :range do %>
+  Low: <%= text_field_tag :low %>
+  High: <%= text_field_tag :high %>
+  <%= hidden_field_tag :id, params[:id] %>
+  <%= submit_tag "Reset Limits" %>
+<% end %>
+
+<%= link_to 'GoBack', :back %>
+
+<% unless @pwrdata.blank? %>
+<h2>Power data near <%=h hms( @aoc.pwr_datum.dtime - @run.on_chg.pwr_datum.dtime ) %> off candidate</h2>
+<div id="scroll">
+
+<table>
+<% @pwrdata.each_with_index do |pd, i| %>
+  <% if i % 20 == 0 %>
+    <tr>
+      <th>Time from</th>
+      <th>Watts</th>
+      <th>Change</th>
+      <th>- Ramp -</th>
+    </tr>
+  <% end %>
+
+  <tr>
+    <td><%=h pd.dtime - @atime %></td>
+    <td><%=h pd.watts %></td>
+    <td><%=h pd.obs_chg.blank? ? '-----' : pd.obs_chg.wattdiff %></td>
+    <td><%=h pd.obs_chg.blank? ? '-----' : onedecimal(pd.obs_chg.ramp) %></td>
+  </tr>
+
+<% end %>
+
+</table>
+</div>
+<% end %>
