@@ -16,7 +16,7 @@ class ObsChgsController < ApplicationController
                     params[:mindiff], params[:maxdiff] ]
       order = 'ramp' if order.blank?
     end
-    @obs_chgs = ObsChg.paginate( :page => params[:page]).order('order')
+    @obs_chgs = ObsChg.paginate( :page => params[:page])
 #      :order => order, :conditions => @conditions
 
     unless @conditions.nil?

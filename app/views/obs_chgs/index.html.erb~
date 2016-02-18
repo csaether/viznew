@@ -55,6 +55,7 @@
     <td><%= obs_chg.training if obs_chg.training %></td>
     <td><%= runmatchlink( obs_chg ) %></td>
 <!--    <td><%= link_to 'Show stuff', obs_chg %>  -->
+    <td><%= link_to 'Stuff', :action => 'shof1', :id => obs_chg %>
     <td><%= link_to 'Transition', :action => 'shot', :id => obs_chg %>
     <% if obs_chg.wattdiff > 0 -%>
       <% if obs_chg.run_ons.count > 0 %>

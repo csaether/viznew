@@ -71,7 +71,7 @@ class ChgSig < ActiveRecord::Base
 
   def ChgSig.getalist
     if @@alist.empty?
-      @@alist = ChgSig.find :all
+      @@alist = ChgSig.all
     end
     @@alist
   end
@@ -234,7 +234,7 @@ class ChgSig < ActiveRecord::Base
 
   def ChgSig.onmatches( obschg )  # an ObsChg object
     if @@alist.empty?
-      @@alist = ChgSig.find :all
+      @@alist = ChgSig.all
 debugger
     end
 
