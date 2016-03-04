@@ -1,3 +1,5 @@
+require 'csv'
+
 class ObsChgsController < ApplicationController
   def range
 
@@ -52,7 +54,7 @@ class ObsChgsController < ApplicationController
     end
     @obs_chgs = ObsChg.where @conditions
 
-    csvdata = FasterCSV.generate do |line|
+    csvdata = CSV.generate do |line|
       line << ['WattChg', 'Ramp', 'TranCnt', 'Name']
       @obs_chgs.each do |oc|
         line << [oc.wattdiff, (oc.ramp*10).to_i/10.0, oc.trancycs, oc.cname]
