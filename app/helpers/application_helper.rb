@@ -21,8 +21,8 @@ module ApplicationHelper
 
   def ocpageurl pwrdatum
 
-    oc = ObsChg.find :first, :conditions => ['pwr_datum_id = ?', pwrdatum]
-    opage = (oc.id - ObsChg.find(:first).id)/ObsChg.per_page + 1
+    oc = ObsChg.where('pwr_datum_id = ?', pwrdatum).first
+    opage = (oc.id - ObsChg.first.id)/ObsChg.per_page + 1
     url_for :controller => :obs_chgs, :page => opage
   end
 

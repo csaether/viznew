@@ -21,9 +21,9 @@ class FdiffsController < ApplicationController
       fname = low.to_s + '-' + high.to_s
     end
     fname += '.csv'
-    oca = ObsChg.find :all, :order => 'wattdiff', :conditions => cond
+    oca = ObsChg.conditions(cond).order('wattdiff')
 
-    cnt = FftDatum.find(:first).fft_spec.spec.count
+    cnt = FftDatum.first.fft_spec.spec.count
 
     hdr = Array.new( 4 + cnt )
     hdr[0] = 'Name'

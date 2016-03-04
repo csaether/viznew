@@ -38,6 +38,7 @@ Rails.application.routes.draw do
       get 'backmatch'
       get 'endrun'
       get 'shot'
+      get 'shof1'
     end
 
     collection do

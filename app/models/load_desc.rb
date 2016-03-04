@@ -34,7 +34,7 @@ class LoadDesc < ActiveRecord::Base
     (rat*wattdiff).to_i
   rescue Exception => e  # really $!
     puts e
-debugger
+byebug
   end
 
   def dutydist( dursecs )

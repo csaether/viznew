@@ -11,11 +11,15 @@ default: &default
 
 development:
   <<: *default
-  database: db/eviz.sqlite3
+  database: db/1dec2011.sqlite3
 
 eviz:
   <<: *default
   database: db/eviz.sqlite3
+
+1dec:
+  <<: *default
+  database: db/1dec2011.sqlite3
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".

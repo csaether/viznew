@@ -15,7 +15,7 @@ class FftDatum < ActiveRecord::Base
   def FftDatum.doburstdat(bname,  # base name, will add extension
              lowcyc = 0,  # lowest cycle to output
              hicyc = nil)  # highest cycle to output
-debugger
+byebug
     i = IO.sysopen(bname+'-burst.dat')
     fin = IO.open(i, 'rb')
     FftDatum.connection.execute('PRAGMA synchronous=0;')

@@ -9,8 +9,7 @@ class RunsController < ApplicationController
       @conditions = ['load_desc_id = ?', params[:load_desc_id] ]
       @which = LoadDesc.find(params[:load_desc_id]).name
     end
-    @runs = Run.paginate :page => params[:page],
-      :conditions => @conditions, :order => :start_time
+    @runs = Run.where(@conditions).order(:start_time).paginate :page => params[:page]
 
     unless @conditions.nil?
       onwattvals=[]
@@ -75,8 +74,7 @@ class RunsController < ApplicationController
 
       @aoc = ObsChg.find params[:ocid]
       @atime = @aoc.pwr_datum.dtime  # around this time
-      @pwrdata = PwrDatum.find :all,
-        :conditions => ['dtime > ? and dtime < ?', @atime - 300, @atime + 300]
+      @pwrdata = PwrDatum.where('dtime > ? and dtime < ?', @atime - 300, @atime + 300)
     end
   end
 
@@ -92,9 +90,8 @@ class RunsController < ApplicationController
     if @nxtrun
       @hipd = @nxtrun.on_chg.pwr_datum
     else
-      @hipd = PwrDatum.find :first, :conditions => ['dtime > ?',
-                                                   ontime + 5*60*60 ] # 5 hrs
-      @hipd = PwrDatum.find( :last ) unless @hipd
+      @hipd = PwrDatum.where('dtime > ?', ontime + 5*60*60).first # 5 hrs
+      @hipd = PwrDatum.last unless @hipd
     end
 
     csa = @run.load_desc.chg_sigs
@@ -111,10 +108,8 @@ class RunsController < ApplicationController
       high = cshi if high.nil?
 
 
-      ocac = ObsChg.find :all, :limit => 20,
-      :conditions =>
-        ['pwr_datum_id > ? AND pwr_datum_id < ? AND wattdiff <= ? AND wattdiff >= ?',
-         pd, @hipd, high, low ]
+      ocac = ObsChg.where('pwr_datum_id > ? AND pwr_datum_id < ? AND wattdiff <= ? AND wattdiff >= ?',
+         pd, @hipd, high, low).limit(20)
       ocac.each do |oc|
         doca.push [cs.distance(oc), oc, cs]
       end
@@ -125,8 +120,7 @@ class RunsController < ApplicationController
 
       @aoc = ObsChg.find params[:ocid]
       @atime = @aoc.pwr_datum.dtime  # around this time
-      @pwrdata = PwrDatum.find :all,
-        :conditions => ['dtime > ? and dtime < ?', @atime - 300, @atime + 300]
+      @pwrdata = PwrDatum.where('dtime > ? and dtime < ?', @atime - 300, @atime + 300)
     end
   end
 
@@ -173,7 +167,7 @@ class RunsController < ApplicationController
     end
     
     redirect_to( url_for :action => :index, :controller => 'obs_chgs',
-         :page => (obs_chg.id - ObsChg.find(:first).id)/ObsChg.per_page + 1)
+         :page => (obs_chg.id - ObsChg.first.id)/ObsChg.per_page + 1)
   end
 
   # POST /runs
@@ -197,7 +191,7 @@ class RunsController < ApplicationController
   # PUT /runs/1.xml
   def update
     @run = Run.find(params[:id])
-debugger
+byebug
     respond_to do |format|
       if @run.update_attributes(params[:run])
         flash[:notice] = 'Run was successfully updated.'

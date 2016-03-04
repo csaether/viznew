@@ -37,7 +37,7 @@ class PwrDatum < ActiveRecord::Base
     lastochg = nil
     gotcycdata = false
 #    countpercycle = 1000000 if countpercycle.nil?
-debugger
+byebug
     begin
       pd = PwrDatum.find :last  # effectively ordered by dtime
     rescue
@@ -189,7 +189,7 @@ exists, but this is not the case now.  this is also slow.
               end                
             end
             if chg.to_f == 0.0
-debugger
+byebug
               chg = 1
             end
             rampval = valdist.to_f/chg.to_f

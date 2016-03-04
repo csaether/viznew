@@ -7,7 +7,7 @@ class ClustController < ApplicationController
                      params[:mindiff], params[:maxdiff] ]
     end
 
-    posobschgs = ObsChg.find :all, :conditions => conditions
+    posobschgs = ObsChg.where( conditions )
     posa = posobschgs.collect{|o| [o.wattdiff, o]}
     posminerds = Clu.minertiad posa
     posmins = Clu.peaks posminerds, 1
@@ -19,7 +19,7 @@ class ClustController < ApplicationController
                      -(params[:mindiff].to_i), -(params[:maxdiff].to_i) ]
     end
 
-    negobschgs = ObsChg.find :all, :conditions => conditions
+    negobschgs = ObsChg.where( conditions )
     nega = negobschgs.collect{|o| [o.wattdiff, o]}
     negminerds = Clu.minertiad nega
     negmins = Clu.peaks negminerds, 1
@@ -45,7 +45,7 @@ class ClustController < ApplicationController
                      params[:mindiff], params[:maxdiff] ]
     end
 
-    posobschgs = ObsChg.find :all, :conditions => conditions
+    posobschgs = ObsChg.where( conditions )
     posa = posobschgs.collect{|o| [o.wattdiff, o]}
     posminerds = Clu.minertiad posa
     @onwattdens = posminerds.collect{|e| [e[0], e[1]]}
@@ -57,7 +57,7 @@ class ClustController < ApplicationController
                      -(params[:mindiff].to_i), -(params[:maxdiff].to_i) ]
     end
 
-    negobschgs = ObsChg.find :all, :conditions => conditions
+    negobschgs = ObsChg.where( conditions )
     nega = negobschgs.collect{|o| [o.wattdiff, o]}
     negminerds = Clu.minertiad nega
     @invoffwattdens = negminerds.collect{|e| [-e[0], e[1]]}
@@ -139,7 +139,7 @@ class ClustController < ApplicationController
     scaling = 7.0
     scaling = params[:scaling].to_f unless params[:scaling].blank?
 
-    posobschgs = ObsChg.find :all, :conditions => conditions
+    posobschgs = ObsChg.where conditions
     posa = posobschgs.collect{|o| [o.wattdiff, o]}
     posminerds = Clu.minertiad posa, deltapcnt, scaling
     posminerds.each do |e|
@@ -157,7 +157,7 @@ class ClustController < ApplicationController
                      -(params[:mindiff].to_i), -(params[:maxdiff].to_i) ]
     end
 
-    negobschgs = ObsChg.find :all, :conditions => conditions
+    negobschgs = ObsChg.where conditions
     nega = negobschgs.collect{|o| [o.wattdiff, o]}
     negminerds = Clu.minertiad nega
     negminerds.each do |e|
@@ -181,7 +181,7 @@ class ClustController < ApplicationController
     @hbins = Clues.new
     @hbins.binsizes=[ params[:wattstep], params[:varstep], params[:rampstep] ]
 
-    tups = ObsChg.find(:all).collect{|o| [o.wattdiff, o.vardiff, o.ramp]}
+    tups = ObsChg.all.collect{|o| [o.wattdiff, o.vardiff, o.ramp]}
     @hbins.tups2bins tups
     @hbins.genbinmdiplus hyperrad
 
@@ -202,7 +202,7 @@ class ClustController < ApplicationController
     hyperrad = params[:hyperrad].to_f
     @hbins.binsizes=[ params[:wattstep], params[:varstep], params[:rampstep] ]
 
-    tups = ObsChg.find(:all).collect{|o| [o.wattdiff, o.vardiff, o.ramp]}
+    tups = ObsChg.all.collect{|o| [o.wattdiff, o.vardiff, o.ramp]}
     @hbins.tups2bins tups
     @hbins.genbinmdiplus hyperrad
 
@@ -253,7 +253,7 @@ class ClustController < ApplicationController
     hyperrad = params[:hyperrad].to_f
     @hbins.binsizes = [ params[:wattstep], params[:varstep], params[:rampstep] ]
 
-    tups = ObsChg.find(:all).collect{|o| [o.wattdiff, o.vardiff, o.ramp]}
+    tups = ObsChg.all.collect{|o| [o.wattdiff, o.vardiff, o.ramp]}
     @hbins.tups2bins tups
     @hbins.genbinmdiplus hyperrad
 

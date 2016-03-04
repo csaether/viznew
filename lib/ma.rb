@@ -16,7 +16,7 @@ class Ma
   def Ma.swin( vals, basedelta )
     return nil if vals.count < 10
     # slide window over sorted(?) values
-debugger
+byebug
     firstval = vals[0].to_i
     lastval = vals[-1].to_i
     return if lastval < firstval
@@ -34,7 +34,7 @@ debugger
       hiv = cv + delta
       clowv = cv - delta/3
       chiv = cv + delta/3
-      while vals[loi] < lowv && loi < maxi : loi += 1 end
+      while vals[loi] < lowv && loi < maxi ; loi += 1 end
       while vals[hii] < hiv && hii < maxi
         break if vals[hii+1] > hiv
         hii += 1
@@ -44,7 +44,7 @@ debugger
       next unless vals[loi..hii].include? cv
       mean, dev, count = Ma.stdev vals[loi..hii]
       retA.push [count, cv, (mean-cv).to_i, delta.to_i]
-      while vals[cloi] < clowv && cloi < maxi : cloi += 1 end
+      while vals[cloi] < clowv && cloi < maxi ; cloi += 1 end
       while vals[chii] < chiv && chii < maxi
         break if vals[chii+1] > chiv
         chii += 1

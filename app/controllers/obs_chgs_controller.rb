@@ -16,7 +16,7 @@ class ObsChgsController < ApplicationController
                     params[:mindiff], params[:maxdiff] ]
       order = 'ramp' if order.blank?
     end
-    @obs_chgs = ObsChg.paginate( :page => params[:page])
+    @obs_chgs = ObsChg.where(@conditions).order(order).paginate( :page => params[:page])
 #      :order => order, :conditions => @conditions
 
     unless @conditions.nil?
@@ -50,7 +50,7 @@ class ObsChgsController < ApplicationController
       @conditions = ['wattdiff > ? and wattdiff < ?',
                     params[:mindiff], params[:maxdiff] ]
     end
-    @obs_chgs = ObsChg.find :all, :conditions => @conditions
+    @obs_chgs = ObsChg.where @conditions
 
     csvdata = FasterCSV.generate do |line|
       line << ['WattChg', 'Ramp', 'TranCnt', 'Name']
@@ -73,7 +73,7 @@ class ObsChgsController < ApplicationController
   # GET /obs_chgs/new
   # GET /obs_chgs/new.xml
   def new
-debugger
+byebug
     @obs_chg = ObsChg.new
 
     respond_to do |format|
@@ -140,7 +140,7 @@ debugger
         flash[:notice] = 'No change to signature.'
       end
       format.html { redirect_to(url_for :action => :index,
-      :page => (@obs_chg.id - ObsChg.find(:first).id)/ObsChg.per_page + 1 )}
+      :page => (@obs_chg.id - ObsChg.first.id)/ObsChg.per_page + 1 )}
       format.xml  { head :ok }
     end
   end
@@ -166,7 +166,7 @@ debugger
     run.on_chg.update_attribute :training, true
     
     redirect_to( url_for :action => :index, :controller => 'obs_chgs',
-         :page => (obs_chg.id - ObsChg.find(:first).id)/ObsChg.per_page + 1)
+         :page => (obs_chg.id - ObsChg.first.id)/ObsChg.per_page + 1)
   end
 
   # DELETE /obs_chgs/1
@@ -274,7 +274,7 @@ debugger
   end
 
   def wattvar
-    @allwattvars=ObsChg.find(:all, :limit => 400).collect{|o| [o.wattdiff, o.vardiff]}
+    @allwattvars=ObsChg.limit(400).collect{|o| [o.wattdiff, o.vardiff]}
     @onwattvars=@allwattvars.select{|w,v| w > 0}
     offwattvars=@allwattvars.reject{|w,v| w > 0}
     @invoffwattvars = offwattvars.collect{|w,v| [-w, -v]}

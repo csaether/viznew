@@ -25,7 +25,7 @@ class ChgSigsController < ApplicationController
   # GET /chg_sigs/new.xml
   def new
     @chg_sig = ChgSig.new
-    @loads = LoadDesc.find :all
+    @loads = LoadDesc.all
 
     respond_to do |format|
       format.html # new.html.erb
@@ -36,14 +36,14 @@ class ChgSigsController < ApplicationController
   # GET /chg_sigs/1/edit
   def edit
     @chg_sig = ChgSig.find(params[:id])
-    @loads = LoadDesc.find :all
+    @loads = LoadDesc.all
 =begin
     onwattvals=[]
     offwattvals=[]
     onrampvals=[]
     ontranvals=[]
     offtranvals=[]
-    oca = @chg_sig.obs_chgs.find_all_by_training true
+    oca = @chg_sig.where('training'
     oca = @chg_sig.obs_chgs.find(:all) if oca.empty?
     oca.each do |oc|
       if oc.wattdiff > 0
@@ -68,7 +68,7 @@ class ChgSigsController < ApplicationController
   def create
 
     @chg_sig = ChgSig.new(params[:chg_sig])
-    @loads = LoadDesc.find :all
+    @loads = LoadDesc.all
 
     respond_to do |format|
       if @chg_sig.save

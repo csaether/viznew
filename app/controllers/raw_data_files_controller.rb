@@ -3,7 +3,7 @@ class RawDataFilesController < ApplicationController
   # GET /raw_data_files.xml
   def index
     @raw_data_files = RawDataFile.all
-    @hicycnum = Bdcycle.find :last
+    @hicycnum = Bdcycle.last
 
     respond_to do |format|
       format.html # index.html.erb
@@ -26,7 +26,7 @@ class RawDataFilesController < ApplicationController
   # GET /raw_data_files/new.xml
   def new
     @raw_data_file = RawDataFile.new
-    @hicycnum = Bdcycle.find :last
+    @hicycnum = Bdcycle.last
 
     respond_to do |format|
       format.html # new.html.erb
@@ -37,7 +37,7 @@ class RawDataFilesController < ApplicationController
   # GET /raw_data_files/1/edit
   def edit
     @raw_data_file = RawDataFile.find(params[:id])
-    @hicycnum = Bdcycle.find :last
+    @hicycnum = Bdcycle.last
   end
 
   # POST /raw_data_files

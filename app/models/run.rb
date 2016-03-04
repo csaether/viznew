@@ -72,7 +72,7 @@ class Run < ActiveRecord::Base
     nil
   rescue Exception => e  # really $!
     puts e
-debugger
+byebug
   end
 
   def Run.allscan( ondistlimit = 5, offdistlimit = 5 )
@@ -145,7 +145,7 @@ accumlating the best off events for currently open runs
     nil
   rescue Exception => e  # really $!
     puts e
-debugger
+byebug
   end
 
   def closerun( maxdist = 2.0 )
@@ -247,7 +247,7 @@ this is bogus - need to revisit
     self.update_attribute :arr_ag, ArrAg.new( offsda )
   rescue Exception => e  # really $!
     puts e
-debugger
+byebug
   end
 
 end

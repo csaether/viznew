@@ -195,10 +195,8 @@ class ChgSig < ActiveRecord::Base
     trylist.each do |dis, cs|
       next if cs.load_descs.empty? # a ChgSig may not have a LoadDesc
       cs.load_descs.each do |ld|  
-        openruns=Run.find :all,
-  :conditions => ['off_obs_chg_id is null and load_desc_id = ? and start_time < ?',
-                  ld.id, oc.pwr_datum.dtime],
-        :order => "start_time"
+        openruns=Run.where('off_obs_chg_id is null and load_desc_id = ? and start_time < ?',
+                  ld.id, oc.pwr_datum.dtime).order("start_time")
         openruns.each do |r|
           # add in distance from duration here
           csrlist.push [dis, r, cs]
@@ -235,7 +233,7 @@ class ChgSig < ActiveRecord::Base
   def ChgSig.onmatches( obschg )  # an ObsChg object
     if @@alist.empty?
       @@alist = ChgSig.all
-debugger
+byebug
     end
 
     wchg = obschg.wattdiff
