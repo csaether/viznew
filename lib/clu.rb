@@ -286,6 +286,8 @@ debugger
       next if count == 1
 #      minertiasplus.push [  tval, minertiasum/count,
       inertia = (10*count*count/minertiasum).to_i/10.0
+#      inertia = (1000*count/minertiasum).to_i/10.0
+# puts "tval #{tval}, fardist #{fardist}, count #{count}, inertia #{inertia}"
       minertiasplus.push [  tval, inertia,
                            sortvalplus[ilow..ihi] ]
     end
