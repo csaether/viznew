@@ -30,17 +30,16 @@ class Clu
       prevtval = tval
       fardist = ((tval*maxdpcnt)/100.0).abs  # max delta from here
       minval = tval - fardist  # minimum value in range
-      j = nil
       ilow.upto(totnum - 1) do |j|  # start from previous low index
+        ilow = j
         break if sortvalplus[j][0] >= minval
       end
-      ilow = j
       maxval = tval + fardist  # high value for this range
       ihi.upto(totnum - 1) do |j|  # start from previous high index
         break if sortvalplus[j][0] > maxval
+        ihi = j
       end
-      ihi = j - 1
-      ihi  = j if sortvalplus[j][0] <= maxval
+      ihi  += 1 if sortvalplus[ihi][0] <= maxval
 =begin
   at this point we have the range of values within maxdpcnt identified
   by ilow and ihi
@@ -74,17 +73,17 @@ debugger
       twval = sobs[i].wattdiff  # test watt diff val
       farwdist = ((twval*maxdpcnt)/100.0).abs  # far end of range considered
       minwval = twval - farwdist  # minimum diff this range
-      j = nil
       ilow.upto(totnum - 1) do |j|  # start from previous low index
+        ilow = j
         break if sobs[j].wattdiff >= minwval  # start for this test val
       end
-      ilow = j
       maxwval = twval + farwdist  # hi end of range for this test val
       ihi.upto(totnum - 1) do |j|  # again, start from previous high
         break if sobs[j].wattdiff > maxwval  # break when beyond this limit
+        ihi = j
       end
-      ihi = j - 1 # one before break is end of range
-      ihi  = j if sobs[j].wattdiff <= maxwval # check for end case
+      # was ihi = j - 1 # one before break is end of range
+      ihi  += 1 if sobs[ihi].wattdiff <= maxwval # check for end case
 =begin
   at this point we have the range of values within maxdpcnt identified
   by ilow and ihi
@@ -138,17 +137,16 @@ debugger
       lastwattdiff = twval
       farwdist = ((twval*maxdpcnt)/100.0).abs  # far end of range considered
       minwval = twval - farwdist  # minimum diff this range
-      j = nil
       ilow.upto(totnum - 1) do |j|  # start from previous low index
+        ilow = j
         break if sobs[j].wattdiff >= minwval  # start for this test val
       end
-      ilow = j
       maxwval = twval + farwdist  # hi end of range for this test val
       ihi.upto(totnum - 1) do |j|  # again, start from previous high
         break if sobs[j].wattdiff > maxwval  # break when beyond this limit
+        ihi = j
       end
-      ihi = j - 1 # one before break is end of range
-      ihi  = j if sobs[j].wattdiff <= maxwval # check for end case
+      ihi  += 1 if sobs[ihi].wattdiff <= maxwval # check for end case
 =begin
   at this point we have the range of values within maxdpcnt identified
   by ilow and ihi
@@ -178,17 +176,16 @@ debugger
         farvar = 2.0 * ((varval*maxdpcnt)/100.0).abs
         farvar = 1.0 if farvar < 1.0
         minvval = varval - farvar
-        j = nil
         ivlow.upto( vvs.count - 1 ) do |j|
+          ivlow = j
           break if vvs[j] >= minvval
         end
-        ivlow = j
         maxvval = varval + farvar
         ivhi.upto( vvs.count - 1 ) do |j|
           break if vvs[j] > maxvval
+          ivhi = j
         end
-        ivhi = j - 1  # one before break still in range
-        ivhi = j if vvs[j] <= maxvval  # end case
+        ivhi += 1 if vvs[ivhi] <= maxvval  # end case
 
         vgsum = 0.0
         vvs[ivlow..ivhi].each do |vv|
@@ -262,17 +259,16 @@ debugger
       fardist = ((tval*maxdpcnt)/100.0).abs  # max delta from here
       fardist = 10 if fardist < 10
       minval = tval - fardist  # minimum value in range
-      j = nil
       ilow.upto(totnum - 1) do |j|  # start from previous low index
+        ilow = j
         break if sortvalplus[j][0] >= minval
       end
-      ilow = j
       maxval = tval + fardist  # high value for this range
       ihi.upto(totnum - 1) do |j|  # start from previous high index
         break if sortvalplus[j][0] > maxval
+        ihi = j
       end
-      ihi = j - 1
-      ihi  = j if sortvalplus[j][0] <= maxval
+      ihi  += 1 if ihi < totnum && sortvalplus[ihi][0] <= maxval
 =begin
   at this point we have the range of values within maxdpcnt identified
   by ilow and ihi
@@ -290,6 +286,8 @@ debugger
       next if count == 1
 #      minertiasplus.push [  tval, minertiasum/count,
       inertia = (10*count*count/minertiasum).to_i/10.0
+#      inertia = (1000*count/minertiasum).to_i/10.0
+# puts "tval #{tval}, fardist #{fardist}, count #{count}, inertia #{inertia}"
       minertiasplus.push [  tval, inertia,
                            sortvalplus[ilow..ihi] ]
     end
