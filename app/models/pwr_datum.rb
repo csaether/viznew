@@ -37,9 +37,9 @@ class PwrDatum < ActiveRecord::Base
     lastochg = nil
     gotcycdata = false
 #    countpercycle = 1000000 if countpercycle.nil?
-byebug
+
     begin
-      pd = PwrDatum.find :last  # effectively ordered by dtime
+      pd = PwrDatum.last  # effectively ordered by dtime
     rescue
       pd = nil
     end

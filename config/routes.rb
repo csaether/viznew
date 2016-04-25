@@ -19,8 +19,6 @@ Rails.application.routes.draw do
 
   resources :load_descs
 
-  resources :raw_data_files
-
   # Example resource route with options:
   #   resources :products do
   #     member do
@@ -32,6 +30,13 @@ Rails.application.routes.draw do
   #       get 'sold'
   #     end
   #   end
+
+  resources :raw_data_files do
+    member do
+      get 'process_files'
+      get 'add_cycles'
+    end
+  end
 
   resources :obs_chgs do
     member do

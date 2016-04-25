@@ -11,11 +11,15 @@ default: &default
 
 development:
   <<: *default
-  database: db/1dec2011.sqlite3
+  database: db/reviz.sqlite3
 
-eviz:
+reviz:
   <<: *default
-  database: db/eviz.sqlite3
+  database: db/reviz.sqlite3
+
+revizp:  # enable caching in environments/revizp
+  <<: *default
+  database: db/reviz.sqlite3
 
 1dec:
   <<: *default

@@ -41,7 +41,7 @@ class RawDataFile < ActiveRecord::Base
     fin = open_burst_data
     Bdcycle.connection.execute('PRAGMA synchronous=0;')
 
-    lastbd = Bdcycle.find :last
+    lastbd = Bdcycle.last
     hicycnum = lastbd.nil? ? 0 : lastbd.cyclenum
 
     cycnum = nil
@@ -114,7 +114,7 @@ class RawDataFile < ActiveRecord::Base
     fin = open_burst_data
     Bdcycle.connection.execute('PRAGMA synchronous=0;')
 
-    lastbd = Bdcycle.find :last
+    lastbd = Bdcycle.last
     hicycnum = lastbd.nil? ? 0 : lastbd.cyclenum
 
     cycnum = nil

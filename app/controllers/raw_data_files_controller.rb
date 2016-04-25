@@ -43,8 +43,8 @@ class RawDataFilesController < ApplicationController
   # POST /raw_data_files
   # POST /raw_data_files.xml
   def create
-
-    @raw_data_file = RawDataFile.new(params[:raw_data_file])
+byebug
+    @raw_data_file = RawDataFile.create rdf_params
     if @raw_data_file.leg_maps.count == 0
       # temp until edit form is fixed
       legmap = LegMap.create! :leg => 0, :voltchan => 0, :ampchan => 1,
@@ -71,7 +71,7 @@ class RawDataFilesController < ApplicationController
     @raw_data_file = RawDataFile.find(params[:id])
 
     respond_to do |format|
-      if @raw_data_file.update_attributes(params[:raw_data_file])
+      if @raw_data_file.update_attributes(rdf_params)
         flash[:notice] = 'RawDataFile was successfully updated.'
         format.html { redirect_to raw_data_files_path }
         format.xml  { head :ok }
@@ -95,20 +95,19 @@ class RawDataFilesController < ApplicationController
   end
 
   def process_files
-
+byebug
     @raw_data_file = RawDataFile.find(params[:id])
-=begin
-    lastbd = Bdcycle.find :last
+
+    lastbd = Bdcycle.last
     hicycnum = lastbd.nil? ? 0 : lastbd.cyclenum
     if  hicycnum > @raw_data_file.base_cyclenum
       flash[:error] = 'Already processed higher cyclenumbers'
     else
-=end
       @raw_data_file.process_burst_data rescue Exception
 
       @raw_data_file.process_events
       flash[:notice] = 'Processed data files'
-#    end
+    end
     redirect_to raw_data_files_path
   end
 
@@ -119,5 +118,11 @@ class RawDataFilesController < ApplicationController
     flash[:notice] = 'Checked cycle data'
 
     redirect_to raw_data_files_path
+  end
+
+  private
+  # to get at strong params, I guess
+  def rdf_params
+    params.require(:raw_data_file).permit(:bname, :base_cyclenum, :data_channels)
   end
 end
