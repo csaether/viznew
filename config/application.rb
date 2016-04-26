@@ -25,5 +25,8 @@ module Viznew
 
     # autoload lib again
     config.autoload_paths << Rails.root.join('lib')
+
+    # info only logging unless overridden
+    config.log_level = :info
   end
 end
