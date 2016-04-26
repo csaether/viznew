@@ -1,2 +1,2 @@
 # viznew
-More later. Maybe.
+Rails app to support vizawatt monitor.
