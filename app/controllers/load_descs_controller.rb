@@ -30,17 +30,20 @@ class LoadDescsController < ApplicationController
   # GET /load_descs/new.xml
   def new
     @load_desc = LoadDesc.new
+
+    respond_to do |format|
+      format.html # new.html.erb
+      format.xml  { render :xml => @load_desc }
+    end
+=begin
+byebug
     echgsig = params[:editchgsig]
     if echgsig.nil?
       @load_desc[:editchgsig] = nil  # send along for the ride
     else
       @load_desc[:editchgsig] = echgsig
     end
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.xml  { render :xml => @load_desc }
-    end
+=end
   end
 
   # GET /load_descs/1/edit
@@ -54,7 +57,7 @@ class LoadDescsController < ApplicationController
 
     echgsig = params[:load_desc][:editchgsig]
     params[:load_desc].delete :editchgsig
-    @load_desc = LoadDesc.new(params[:load_desc])
+    @load_desc = LoadDesc.new(ldc_parms)
     respond_to do |format|
       if @load_desc.save
         if echgsig.blank?  # hidden field returned blank for nil
@@ -79,7 +82,7 @@ class LoadDescsController < ApplicationController
     params[:load_desc][:short_duty]=X.parsecs params[:load_desc][:short_duty]
     params[:load_desc][:long_duty]=X.parsecs params[:load_desc][:long_duty]
     respond_to do |format|
-      if @load_desc.update_attributes(params[:load_desc])
+      if @load_desc.update_attributes(ldc_parms)
         format.html { redirect_to(load_descs_path, :notice => 'LoadDesc was successfully updated.') }
         format.xml  { head :ok }
       else
@@ -99,5 +102,9 @@ class LoadDescsController < ApplicationController
       format.html { redirect_to(load_descs_url) }
       format.xml  { head :ok }
     end
+  end
+  private
+  def ldc_parms
+    params.require(:load_desc).permit(:avg_on, :avg_off, :name, :short_duty, :long_duty)
   end
 end

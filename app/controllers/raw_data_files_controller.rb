@@ -43,7 +43,6 @@ class RawDataFilesController < ApplicationController
   # POST /raw_data_files
   # POST /raw_data_files.xml
   def create
-byebug
     @raw_data_file = RawDataFile.create rdf_params
     if @raw_data_file.leg_maps.count == 0
       # temp until edit form is fixed
@@ -71,7 +70,7 @@ byebug
     @raw_data_file = RawDataFile.find(params[:id])
 
     respond_to do |format|
-      if @raw_data_file.update_attributes(rdf_params)
+      if @raw_data_file.update_attributes(rdf_params) # see private method at end of file
         flash[:notice] = 'RawDataFile was successfully updated.'
         format.html { redirect_to raw_data_files_path }
         format.xml  { head :ok }
@@ -95,7 +94,7 @@ byebug
   end
 
   def process_files
-byebug
+
     @raw_data_file = RawDataFile.find(params[:id])
 
     lastbd = Bdcycle.last

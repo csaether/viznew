@@ -159,7 +159,9 @@ class ChgSig < ActiveRecord::Base
         bi = i
       end
     end
-    raise "nobody close?" if bi.nil?
+    if bi.nil?
+      return bdis,[]
+    end
     return bdis, cslist[bi]
   end
 

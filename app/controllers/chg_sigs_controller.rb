@@ -88,7 +88,7 @@ class ChgSigsController < ApplicationController
     @chg_sig = ChgSig.find(params[:id])
 
     respond_to do |format|
-      if @chg_sig.update_attributes(params[:chg_sig])
+      if @chg_sig.update_attributes(chg_params)
         flash[:notice] = 'ChgSig was successfully updated.'
         format.html { redirect_to chg_sigs_path }
         format.xml  { head :ok }
@@ -116,5 +116,10 @@ class ChgSigsController < ApplicationController
       format.html { redirect_to(chg_sigs_url) }
       format.xml  { head :ok }
     end
+  end
+
+  private  # at end because of an example, and explanation for how/when to declare private still mystifies
+  def chg_params
+    params.require(:chg_sig).permit(:wattchg, :wattchg_dev, :ramp, :ramp_sdev, :trans, :trans_sdev, :varchg, :varchg_sdev)
   end
 end

@@ -1,5 +1,5 @@
 <h1>Cluster bins</h1>
-<% form_tag :action => :bins do %>
+<%= form_tag :action => :bins do %>
   WattStep: <%= text_field_tag :wattstep, params[:wattstep], :size => 5 %>
   VarStep: <%= text_field_tag :varstep, params[:varstep], :size => 5 %>
   RampStep: <%= text_field_tag :rampstep, params[:rampstep], :size => 5 %>

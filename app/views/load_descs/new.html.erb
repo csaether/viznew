@@ -1,8 +1,19 @@
 <h1>New load_desc</h1>
 
-<% form_for(@load_desc) do |f| %>
-  <%= f.error_messages %>
-  <%= f.hidden_field :editchgsig  %>
+<%= form_for(@load_desc) do |f| %>
+  <% if @load_desc.errors.any? %>
+    <div id="error_explanation">
+      <h2>
+	<%= pluralize(@load_desc.errors.count, "error") %> prevented this action:
+      </h2>
+      <ul>
+	<% @load_desc.errors.full_messages.each do |m| %>
+	  <li><%= m %></li>
+	<% end %>
+      </ul>
+    </div>
+  <% end %>
+  <%#= f.hidden_field(:load_desc, :editchgsig)  %>
   <table>
     <tr>
       <td><%= f.label "Name" %></td>
