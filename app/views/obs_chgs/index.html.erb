@@ -67,7 +67,7 @@
 <% end %>
 </table>
 <br />
-<% form_tag :action => :range do %>
+<%= form_tag '/obs_chgs/range', method: "get" do %>
   MinDiff: <%= text_field_tag :mindiff %>
   MaxDiff: <%= text_field_tag :maxdiff %>
   <%= submit_tag "Limit Range" %>

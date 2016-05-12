@@ -69,8 +69,76 @@
   var seriesdat;
   <% diffbase = [] %>
   <% precyc = @obs_chg.precycnum %>
+  <% precyc.downto(precyc - 1) do |cyci| -%>
+    <% bd = Bdcycle.find_by_cyclenum cyci -%>
+    <% avals, vvals = bd.get_avg_values(128, true) -%>
+    seriesdat = {
+        name: <%= cyci %>,
+        marker: { symbol: 'circle' },
+        data: <%= avals.to_json %>
+      };
+    ampchartopts.series.push( seriesdat );
+    <% afft = Cfft(avals) %>
+    seriesdat = {
+        name: <%= cyci %>,
+        marker: { symbol: 'circle' },
+        data: <%= afft.slice(0...5).to_json %>
+      };
+    afftchartopts.series.push(seriesdat);
+
+    seriesdat = {
+        name: <%= cyci %>,
+        marker: { symbol: 'circle' },
+        data: <%= vvals.to_json %>
+      };
+    voltchartopts.series.push( seriesdat );
+
+    <% if cyci == precyc %>
+        <% diffbase = Array.new( avals ) %>
+    <% else %>
+      <% fftda = Arr.diff( Cfft(diffbase), Cfft(avals) ) %>
+      seriesdat = {
+          name: <%= "\"End #{cyci - precyc}\"" %>,
+          marker: { symbol: 'circle' },
+          data: <%= fftda.slice(0...5).to_json %>
+      };
+      dafftchartopts.series.push(seriesdat);
+    <% end %>
+  <% end -%>
 
   <% postcyc = @obs_chg.postcycnum %>
+  <% (postcyc).upto(postcyc + 1) do |cyci| -%>
+    <% bd = Bdcycle.find_by_cyclenum cyci -%>
+    <% avals, vvals = bd.get_avg_values(128, true) -%>
+      seriesdat = {
+        name: <%= cyci %>,
+        marker: { symbol: 'square' },
+        data: <%= avals.to_json %>
+      };
+      ampchartopts.series.push( seriesdat );
+
+      <% afft = Cfft(avals) %>
+      seriesdat = {
+        name: <%= cyci %>,
+        marker: { symbol: 'square' },
+        data: <%= afft.slice(0...5).to_json %>
+      };
+      afftchartopts.series.push(seriesdat);
+
+      seriesdat = {
+        name: <%= cyci %>,
+        marker: { symbol: 'triangle' },
+        data: <%= vvals.to_json %>
+      };
+      voltchartopts.series.push( seriesdat );
+      <% fftda = Arr.diff( Cfft(diffbase), Cfft(avals) ) %>
+      seriesdat = {
+        name: <%= "\"Beg + #{cyci - postcyc}\"" %>,
+        marker: { symbol: 'square' },
+        data: <%= fftda.slice(0...5).to_json %>
+      };
+      dafftchartopts.series.push(seriesdat);
+  <% end -%>
 
   document.observe("dom:loaded", function() {
     new Highcharts.Chart( ampchartopts );

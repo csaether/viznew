@@ -1,5 +1,5 @@
 <h1>Cluster bins</h1>
-<% form_tag :action => :justbins do %>
+<%= form_tag '/clust/justbins', method: "get" do %>
   WattStep: <%= text_field_tag :wattstep, params[:wattstep], :size => 5 %>
   VarStep: <%= text_field_tag :varstep, params[:varstep], :size => 5 %>
   RampStep: <%= text_field_tag :rampstep, params[:rampstep], :size => 5 %>
@@ -28,7 +28,7 @@
   <% biggy = @hbins.biggest @centers[i] -%>
   <% next if biggy.nil? || biggy != @centers[i] -%>
     <tr>
-      <td><%= "#{ramdis[1]}(#{ramdis[2]})" %></td>
+      <td><%= "#{onedecimal(ramdis[1])}(#{ramdis[2]})" %></td>
       <td><%= "#{ramdis[3][0][0]}(#{ramdis[3][0][1]})" %></td>
       <td><%= "#{ramdis[3][1][0]}(#{ramdis[3][1][1]})" %></td>
       <td><%= "#{ramdis[3][2][0]}(#{ramdis[3][2][1]})" %></td>

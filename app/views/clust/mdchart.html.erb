@@ -1,5 +1,5 @@
 <h1>Moment of inertia density</h1>
-<% form_tag :action => :mdchart do %>
+<%= form_tag '/clust/mdchart', method: "get" do %>
   MinDiff: <%= text_field_tag :mindiff %>
   MaxDiff: <%= text_field_tag :maxdiff %>
   <%= submit_tag "Range limit" %>

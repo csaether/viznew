@@ -1,9 +1,9 @@
 <h1>Watts-Var moments of inertia</h1>
-<% form_tag :action => :mdvar do %>
-  MinDiff: <%= text_field_tag :mindiff %>
-  MaxDiff: <%= text_field_tag :maxdiff %>
-  DeltaPcnt: <%= text_field_tag :deltapcnt %>
-  Scaling: <%= text_field_tag :scaling %>
+<%= form_tag '/clust/mdvar', method: "get" do %>
+  MinDiff: <%= text_field_tag :mindiff, nil, size: 6 %>
+  MaxDiff: <%= text_field_tag :maxdiff, nil, size: 6 %>
+  DeltaPcnt: <%= text_field_tag :deltapcnt, nil, size: 6 %>
+  Scaling: <%= text_field_tag :scaling, nil, size: 6 %>
   <%= submit_tag "Range limit" %>
 <% end %>
 
