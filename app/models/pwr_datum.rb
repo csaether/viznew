@@ -60,7 +60,7 @@ class PwrDatum < ActiveRecord::Base
       wattlegvals = []
       varlegvals = []
 =begin
-  a bit obscure.  at the moment there is always two values per line
+  a bit obscure.  at the moment there is always two values per leg per line
   after cycle number.  only "T" has a date at the end, so take away
   the non-value elements (code, cycnum) and divide the remainder by
   two to get the number of legs.  One more if the date is there will
@@ -189,7 +189,7 @@ exists, but this is not the case now.  this is also slow.
               end                
             end
             if chg.to_f == 0.0
-byebug
+# byebug
               chg = 1
             end
             rampval = valdist.to_f/chg.to_f
