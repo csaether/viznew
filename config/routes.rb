@@ -11,7 +11,10 @@ Rails.application.routes.draw do
 
   get 'clust/' => 'clust#index'
   get 'clust/bins' => 'clust#bins'
+  get 'clust/justbins' => 'clust#justbins'
   get 'clust/clusig' => 'clust#clusig'
+  get 'clust/mdchart' => 'clust#mdchart'
+  get 'clust/mdvar' => 'clust#mdvar'
   
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
